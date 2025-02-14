@@ -118,7 +118,7 @@
             }
         </style>
     </head>
-    <body class="bg-gray-200 font-sans text-gray-800 antialiased">
+    <body class="bg-gray-200 font-sans text-purple-950 antialiased">
         <!--sidenav -->
         <div class="sidebar-menu fixed left-0 top-0 z-50 h-full w-64 bg-transparent transition-transform">
             <a href="{{ route('dashboard') }}" class="flex h-16 items-center justify-center bg-white p-2 shadow-md">
@@ -346,7 +346,7 @@
             <!-- end navbar -->
 
             <!-- Content -->
-            <section class="p-6">
+            <section class="p-5">
                 <x-banner />
 
                 {{ $slot }}
