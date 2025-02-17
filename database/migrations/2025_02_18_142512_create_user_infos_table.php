@@ -14,12 +14,10 @@ return new class extends Migration
         Schema::create('user_infos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->string('fname');
-            $table->string('lname');
             $table->date('birthdate')->nullable();
             $table->string('address')->nullable();
             $table->string('contact')->nullable();
-            $table->text('others')->nullable();
+            $table->json('others')->nullable();
             $table->timestamps();
         });
     }

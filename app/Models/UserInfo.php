@@ -13,8 +13,6 @@ class UserInfo extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'fname',
-        'lname',
         'birthdate',
         'address',
         'contact',
@@ -30,14 +28,11 @@ class UserInfo extends Model
     {
         return [
             'birthdate' => 'date',
-            'others' => 'object',
+            'others' => 'array',
         ];
     }
 
-    /**
-     * Relationships
-     * ==================================================
-     */
+    /* ------------------------- Relationships ------------------------- */
 
     // User
     public function user(): BelongsTo
@@ -45,7 +40,5 @@ class UserInfo extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    /**
-     * ==================================================
-     */
+    /* ----------------------------------------------------------------- */
 }

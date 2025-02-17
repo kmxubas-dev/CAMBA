@@ -20,10 +20,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'user@email.com',
         ]);
 
-        $user->info()->create([
-            'fname' => 'Test',
-            'lname' => 'User',
-        ]);
+        $user->info()->create();
 
         User::factory(20)->create();
 

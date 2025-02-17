@@ -35,10 +35,7 @@ class CreateNewUser implements CreatesNewUsers
         $user->password = Hash::make($input['password']);
 
         if ($user->save()) {
-            $user->info()->create([
-                'fname' => $input['fname'],
-                'lname' => $input['lname'],
-            ]);
+            $user->info()->create();
         }
 
         return $user;
