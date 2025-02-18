@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\AppController;
+use App\Http\Controllers\Web\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,4 +15,6 @@ Route::middleware([
 ])->group(function () {
     Route::get('dashboard', [AppController::class, 'dashboard'])->name('dashboard');
     Route::get('profile', [AppController::class, 'profile'])->name('profile');
+
+    Route::resource('products', ProductController::class);
 });
