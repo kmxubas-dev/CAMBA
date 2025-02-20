@@ -5,11 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Product extends Model
+class ProductAuction extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProductFactory> */
+    /** @use HasFactory<\Database\Factories\ProductAuctionFactory> */
     use HasFactory;
 
     /**
@@ -18,12 +17,10 @@ class Product extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'qty',
+        'status',
         'price',
-        'images',
-        'description',
-        'attributes',
+        'start',
+        'end',
     ];
 
     /**
@@ -34,22 +31,17 @@ class Product extends Model
     protected function casts(): array
     {
         return [
-            'attributes' => 'array',
+            'start' => 'datetime',
+            'end' => 'datetime',
         ];
     }
 
     /* ------------------------- Relationships ------------------------- */
 
-    // User
-    public function user(): BelongsTo
+    // Product
+    public function product(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    // ProductAuction
-    public function auction(): HasOne
-    {
-        return $this->hasOne(ProductAuction::class, 'product_id');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 
     /* ----------------------------------------------------------------- */
