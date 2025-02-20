@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductAuction extends Model
 {
@@ -42,6 +43,12 @@ class ProductAuction extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    // ProductBid
+    public function bids(): HasMany
+    {
+        return $this->hasMany(ProductBid::class, 'auction_id');
     }
 
     /* ----------------------------------------------------------------- */

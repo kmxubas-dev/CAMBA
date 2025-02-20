@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model
@@ -50,6 +51,17 @@ class Product extends Model
     public function auction(): HasOne
     {
         return $this->hasOne(ProductAuction::class, 'product_id');
+    }
+
+    // ProductBid
+    public function bids(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            ProductBid::class,
+            ProductAuction::class,
+            'product_id',
+            'auction_id'
+        );
     }
 
     /* ----------------------------------------------------------------- */
