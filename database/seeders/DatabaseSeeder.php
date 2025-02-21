@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Database\Seeders\app\ProductAuctionSeeder;
 use Database\Seeders\app\ProductSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -25,7 +26,8 @@ class DatabaseSeeder extends Seeder
         User::factory(20)->create();
 
         $this->call([
-            ProductSeeder::class
+            ProductSeeder::class,
+            ProductAuctionSeeder::class
         ]);
     }
 }
