@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\UserInfo;
 use Database\Seeders\app\ProductAuctionSeeder;
 use Database\Seeders\app\ProductBidSeeder;
 use Database\Seeders\app\ProductSeeder;
@@ -22,7 +23,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'user@email.com',
         ]);
 
-        $user->info()->create();
+        UserInfo::factory()->for($user)->create();
 
         User::factory(20)->create();
 
