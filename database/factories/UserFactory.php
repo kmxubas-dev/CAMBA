@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Team;
 use App\Models\User;
+use App\Models\UserInfo;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -39,6 +40,22 @@ class UserFactory extends Factory
             'profile_photo_path' => null,
             'current_team_id' => null,
         ];
+    }
+
+    /**
+     * Configure the model factory.
+     */
+    public function configure(): static
+    {
+        return $this->afterMaking(function (User $user) {
+            // ...
+        })->afterCreating(function (User $user) {
+            if ($user->hasVerifiedEmail()) {
+                UserInfo::factory()->for($user)->create();
+            } else {
+                UserInfo::factory()->for($user)->unfilled()->create();
+            }
+        });
     }
 
     /**

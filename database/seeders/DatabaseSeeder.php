@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\UserInfo;
 use Database\Seeders\app\ProductAuctionSeeder;
 use Database\Seeders\app\ProductBidSeeder;
 use Database\Seeders\app\ProductSeeder;
@@ -17,15 +16,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::factory()->create([
+        User::factory()->create([
             'fname' => 'User',
             'lname' => '1',
             'email' => 'user@email.com',
         ]);
 
-        UserInfo::factory()->for($user)->create();
-
-        User::factory(20)->create();
+        User::factory(10)->create();
+        User::factory(10)->unverified()->create();
 
         $this->call([
             ProductSeeder::class,
