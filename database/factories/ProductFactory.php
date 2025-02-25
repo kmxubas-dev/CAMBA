@@ -22,7 +22,7 @@ class ProductFactory extends Factory
             'name' => fake()->word,
             'qty' => fake()->numberBetween(1, 10),
             'price' => fake()->randomFloat(2, 300, 10000),
-            'images' => 'assets/img/placeholder_product.png',
+            'images' => 'assets/img/placeholders/product'.fake()->numberBetween(1, 5).'.jpg',
             'description' => fake()->sentence(10),
             'attributes' => [
                 'size' => fake()->numberBetween(10, 50).'x'.fake()->numberBetween(10, 50).'cm',
