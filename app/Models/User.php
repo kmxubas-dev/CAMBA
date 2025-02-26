@@ -83,6 +83,12 @@ class User extends Authenticatable
         return $this->hasMany(Product::class, 'user_id');
     }
 
+    // ProductBid
+    public function bids(): HasMany
+    {
+        return $this->hasMany(ProductBid::class, 'user_id');
+    }
+
     /* ------------------------- Accessors/Mutators ------------------------- */
 
     // Full name
