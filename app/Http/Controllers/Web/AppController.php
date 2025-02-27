@@ -11,6 +11,26 @@ use Illuminate\Support\Facades\Auth;
 class AppController extends Controller
 {
     /**
+     * Welcome
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function welcome()
+    {
+        $users = User::withCount([
+                        'products',
+                        'products as auctions_count' => function ($query) {
+                            $query->whereHas('auction');
+                        }
+                    ])
+                    ->inRandomOrder()
+                    ->limit(6)
+                    ->get();
+
+        return view('welcome', compact('users'));
+    }
+
+    /**
      * Dashboard
      *
      * @return \Illuminate\Http\Response

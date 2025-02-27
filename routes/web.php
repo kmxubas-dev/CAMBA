@@ -4,9 +4,7 @@ use App\Http\Controllers\Web\AppController;
 use App\Http\Controllers\Web\ProductController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->middleware('guest');
+Route::get('/', [AppController::class, 'welcome'])->middleware('guest');
 
 Route::middleware([
     'auth:sanctum',

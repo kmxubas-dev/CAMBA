@@ -330,90 +330,23 @@
                 </div>
 
                 <div class="container mx-auto px-6 py-6">
-                    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6">
-                        <div class="flex flex-col items-center rounded-xl border bg-purple-800 p-4 sm:p-6 dark:border-gray-700">
-                            <img class="aspect-square w-full rounded-xl object-cover" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80" alt="" />
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6">
+                        @foreach ($users as $user)
+                            <div class="flex flex-col items-center rounded-xl border border-purple-500 bg-purple-800 p-4">
+                                <img class="aspect-square w-full rounded-xl object-cover" src="{{ asset($user->profile_photo_path) }}" alt="" />
 
-                            <h1 class="mt-4 text-center text-xl font-semibold capitalize text-yellow-200">arthur melo</h1>
+                                <h1 class="text-l mt-4 text-center font-semibold capitalize text-yellow-300">{{ $user->name }}</h1>
 
-                            <p class="mt-1 text-sm capitalize text-yellow-200">design director</p>
+                                <p class="mt-1 text-xs font-medium capitalize text-purple-100">Artworks: {{ $user->products_count }}</p>
+                                <p class="mt-1 text-xs font-medium capitalize text-purple-100">Auctions: {{ $user->auctions_count }}</p>
 
-                            <div class="mt-3 flex">
-                                <button class="visible block cursor-pointer rounded-2xl bg-purple-600 px-8 py-3 text-xs font-semibold leading-none tracking-wide text-white hover:bg-purple-600">
-                                    Follow
-                                </button>
+                                {{-- <div class="mt-3 flex">
+                                    <button class="visible block cursor-pointer rounded-2xl bg-purple-600 px-8 py-3 text-xs font-semibold leading-none tracking-wide text-white hover:bg-purple-600">
+                                        Follow
+                                    </button>
+                                </div> --}}
                             </div>
-                        </div>
-
-                        <div class="flex flex-col items-center rounded-xl border bg-purple-800 p-4 sm:p-6 dark:border-gray-700">
-                            <img class="aspect-square w-full rounded-xl object-cover" src="https://images.unsplash.com/photo-1531590878845-12627191e687?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80" alt="" />
-
-                            <h1 class="mt-4 text-center text-xl font-semibold capitalize text-yellow-200">Pamela Anderson</h1>
-
-                            <p class="mt-1 text-sm capitalize text-yellow-200">Lead Developer</p>
-
-                            <div class="mt-3 flex">
-                                <button class="visible block cursor-pointer rounded-2xl bg-purple-600 px-8 py-3 text-xs font-semibold leading-none tracking-wide text-white hover:bg-purple-600">
-                                    Follow
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col items-center rounded-xl border bg-purple-800 p-4 sm:p-6 dark:border-gray-700">
-                            <img class="aspect-square w-full rounded-xl object-cover" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80" alt="" />
-
-                            <h1 class="mt-4 text-center text-xl font-semibold capitalize text-yellow-200">John Doe</h1>
-
-                            <p class="mt-1 text-sm capitalize text-yellow-200">Full stack developer</p>
-
-                            <div class="mt-3 flex">
-                                <button class="visible block cursor-pointer rounded-2xl bg-purple-600 px-8 py-3 text-xs font-semibold leading-none tracking-wide text-white hover:bg-purple-600">
-                                    Follow
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col items-center rounded-xl border bg-purple-800 p-4 sm:p-6 dark:border-gray-700">
-                            <img class="aspect-square w-full rounded-xl object-cover" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80" alt="" />
-
-                            <h1 class="mt-4 text-center text-xl font-semibold capitalize text-yellow-200">arthur melo</h1>
-
-                            <p class="mt-1 text-sm capitalize text-yellow-200">design director</p>
-
-                            <div class="mt-3 flex">
-                                <button class="visible block cursor-pointer rounded-2xl bg-purple-600 px-8 py-3 text-xs font-semibold leading-none tracking-wide text-white hover:bg-purple-600">
-                                    Follow
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col items-center rounded-xl border bg-purple-800 p-4 sm:p-6 dark:border-gray-700">
-                            <img class="aspect-square w-full rounded-xl object-cover" src="https://images.unsplash.com/photo-1531590878845-12627191e687?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80" alt="" />
-
-                            <h1 class="mt-4 text-center text-xl font-semibold capitalize text-yellow-200">Pamela Anderson</h1>
-
-                            <p class="mt-1 text-sm capitalize text-yellow-200">Lead Developer</p>
-
-                            <div class="mt-3 flex">
-                                <button class="visible block cursor-pointer rounded-2xl bg-purple-600 px-8 py-3 text-xs font-semibold leading-none tracking-wide text-white hover:bg-purple-600">
-                                    Follow
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col items-center rounded-xl border bg-purple-800 p-4 sm:p-6 dark:border-gray-700">
-                            <img class="aspect-square w-full rounded-xl object-cover" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80" alt="" />
-
-                            <h1 class="mt-4 text-center text-xl font-semibold capitalize text-yellow-200">John Doe</h1>
-
-                            <p class="mt-1 text-sm capitalize text-yellow-200">Full stack developer</p>
-
-                            <div class="mt-3 flex">
-                                <button class="visible block cursor-pointer rounded-2xl bg-purple-600 px-8 py-3 text-xs font-semibold leading-none tracking-wide text-white hover:bg-purple-600">
-                                    Follow
-                                </button>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </section>
