@@ -1,15 +1,6 @@
 <x-app-layout>
     <!-- Breadcrumb -->
-    <nav class="flex rounded-xl bg-purple-200 p-3 px-5 py-3 text-purple-900" aria-label="Breadcrumb">
-        <ol class = "inline-flex items-center space-x-1 md:space-x-3">
-            <li class = "inline-flex items-center">
-                <a href="#" class="inline-flex items-center text-sm font-medium">
-                    <i class="ri-home-4-fill mr-2 text-lg"></i>
-                    Home
-                </a>
-            </li>
-        </ol>
-    </nav>
+    @include('partials.app_breadcrumbs')
 
     <!-- Stat Cards -->
     <div class="mt-10">
