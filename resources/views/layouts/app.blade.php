@@ -129,7 +129,7 @@
                 <ul class="h-full overflow-auto rounded-xl bg-gradient-to-br from-purple-800 via-fuchsia-700 to-pink-600 p-3 shadow-xl">
 
                     <li class="group mb-1 text-white">
-                        <a href="" class="flex items-center rounded-md p-2 hover:bg-purple-950">
+                        <a href="{{ route('profile.show') }}" class="flex items-center rounded-md p-2 hover:bg-purple-950">
                             <div class="relative h-10 w-10 flex-shrink-0">
                                 <div class="rounded-full bg-white p-1 focus:outline-none focus:ring">
                                     <img class="h-8 w-8 rounded-full" src="https://laravelui.spruko.com/tailwind/ynex/build/assets/images/faces/9.jpg" alt=""/>
@@ -146,14 +146,14 @@
                     <li class="group mx-3 my-2 border-b border-purple-600"></li>
 
                     <li class="group mb-1 text-white">
-                        <a href="" class="flex items-center rounded-md px-4 py-2 hover:bg-purple-950">
+                        <a href="{{ route('dashboard') }}" class="flex items-center rounded-md px-4 py-2 hover:bg-purple-950">
                             <i class="ri-home-9-fill mr-3 text-lg"></i>
                             <span class="text-sm font-semibold">Home</span>
                         </a>
                     </li>
 
                     <li class="group mb-1 text-white">
-                        <a href="" class="flex items-center rounded-md px-4 py-2 hover:bg-purple-950">
+                        <a href="{{ route('products.index') }}" class="flex items-center rounded-md px-4 py-2 hover:bg-purple-950">
                             <i class="ri-shapes-fill mr-3 text-lg"></i>
                             <span class="text-sm font-semibold">My Artworks</span>
                         </a>
