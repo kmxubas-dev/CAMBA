@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\AppController;
 use App\Http\Controllers\Web\ProductAuctionController;
+use App\Http\Controllers\Web\ProductBidController;
 use App\Http\Controllers\Web\ProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,4 +18,5 @@ Route::middleware([
 
     Route::resource('products', ProductController::class);
     Route::resource('auctions', ProductAuctionController::class);
+    Route::resource('bids', ProductBidController::class);
 });
