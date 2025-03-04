@@ -3,28 +3,27 @@
     @include('partials.app_breadcrumbs', [
         'breadcrumbs' => [
             ['label' => 'My Artworks', 'url' => route('products.index')],
-            ['label' => 'Create Artwork'],
+            ['label' => 'Add Artwork'],
         ]
     ])
 
-    <div class="relative flex flex-col justify-center overflow-hidden py-6">
-        <div class="container mx-auto w-full max-w-screen-xl">
+    <!-- Main Section -->
+    <section class="container mx-auto flex w-full flex-col justify-center gap-4 py-5">
+        <!-- Header -->
+        <div class="mx-1 flex items-center justify-between">
+            <h3 class="text-2xl">Add Artwork</h3>
 
-            <!-- Page Title and Back Button -->
-            <div class="mb-4 flex items-center justify-between text-base">
-                <h3 class="text-2xl text-purple-800">
-                    <i class="ri-paint-brush-line mr-1"></i> Create Artwork
-                </h3>
-                <a href="{{ route('products.index') }}"
-                   class="flex items-center rounded-xl bg-purple-600 px-3 py-2 text-white shadow-lg hover:bg-purple-800">
-                    <i class="ri-arrow-left-line text-xl"></i>
-                    <span class="ml-1">Back</span>
-                </a>
-            </div>
+            <a href="{{ route('products.index') }}"
+                class="btn btn-purple w-auto rounded-xl px-3 py-1.5 shadow-lg">
+                <i class="ri-arrow-left-line text-xl"></i>
+                <span>Back</span>
+            </a>
+        </div>
 
+        <div class="flex justify-center">
             <!-- Artwork Create Form -->
             <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data"
-                  class="mx-auto mt-4 max-w-3xl space-y-5 rounded-xl bg-gradient-to-tl from-purple-400 to-pink-400 p-5 px-10 pb-10 shadow-lg">
+                    class="w-full max-w-3xl space-y-5 rounded-xl bg-gradient-to-tl from-purple-400 to-pink-400 p-5 px-10 pb-10 shadow-lg">
                 @csrf
 
                 <!-- Upload Image Section -->
@@ -35,13 +34,13 @@
 
                     <!-- Drag & Drop Zone -->
                     <div id="dropZone"
-                         class="relative flex h-48 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-pink-600 bg-white/30 shadow">
+                            class="relative flex h-48 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-pink-600 bg-white/30 shadow">
                         <img id="previewImage" src="" alt="New Image"
-                             class="hidden h-full w-full object-cover"
-                             onclick="openModal('new', this.src)" />
+                                class="hidden h-full w-full object-cover"
+                                onclick="openModal('new', this.src)" />
 
                         <span id="noPreviewText"
-                              class="flex flex-col items-center text-center text-sm text-purple-900">
+                                class="flex flex-col items-center text-center text-sm text-purple-900">
                             <i class="ri-upload-cloud-2-line mb-1 text-2xl"></i>
                             No image selected yet<br>
                             <span class="text-xs text-purple-800">Click or drag an image here</span>
@@ -49,7 +48,7 @@
 
                         <!-- File Input -->
                         <input type="file" id="imageInput" name="images" accept="image/*"
-                               class="absolute inset-0 h-full w-full cursor-pointer opacity-0" required />
+                                class="absolute inset-0 h-full w-full cursor-pointer opacity-0" required />
                     </div>
 
                     @error('images')
@@ -72,7 +71,7 @@
                             <i class="ri-brush-line mr-1"></i> Artwork Name
                         </label>
                         <input type="text" name="name" value="{{ old('name') }}"
-                               class="mt-1 w-full rounded border border-purple-200 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                                class="mt-1 w-full rounded border border-purple-200 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600" required>
                         @error('name')
                             <div class="mt-2 text-sm text-red-500">{{ $message }}</div>
                         @enderror
@@ -85,7 +84,7 @@
                                 <i class="ri-palette-line mr-1"></i> Type
                             </label>
                             <input type="text" name="attributes[type]" value="{{ old('attributes.type') }}"
-                                   class="mt-1 w-full rounded border border-purple-200 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                                    class="mt-1 w-full rounded border border-purple-200 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600" required>
                             @error('attributes.type')
                                 <div class="mt-2 text-sm text-red-500">{{ $message }}</div>
                             @enderror
@@ -95,7 +94,7 @@
                                 <i class="ri-calendar-2-line mr-1"></i> Year
                             </label>
                             <input type="number" name="attributes[year]" value="{{ old('attributes.year') }}"
-                                   class="mt-1 w-full rounded border border-purple-200 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                                    class="mt-1 w-full rounded border border-purple-200 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600" required>
                             @error('attributes.year')
                                 <div class="mt-2 text-sm text-red-500">{{ $message }}</div>
                             @enderror
@@ -108,7 +107,7 @@
                             <i class="ri-resize-width-line mr-1"></i> Dimensions
                         </label>
                         <input type="text" name="attributes[size]" value="{{ old('attributes.size') }}"
-                               class="mt-1 w-full rounded border border-purple-200 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                                class="mt-1 w-full rounded border border-purple-200 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600" required>
                         @error('attributes.size')
                             <div class="mt-2 text-sm text-red-500">{{ $message }}</div>
                         @enderror
@@ -121,7 +120,7 @@
                                 <i class="ri-money-pound-circle-line mr-1"></i> Price (₱)
                             </label>
                             <input type="number" step="0.01" name="price" value="{{ old('price') }}"
-                                   class="mt-1 w-full rounded border border-purple-200 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                                    class="mt-1 w-full rounded border border-purple-200 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600" required>
                             @error('price')
                                 <div class="mt-2 text-sm text-red-500">{{ $message }}</div>
                             @enderror
@@ -131,7 +130,7 @@
                                 <i class="ri-stack-line mr-1"></i> Quantity
                             </label>
                             <input type="number" name="qty" value="{{ old('qty') }}"
-                                   class="mt-1 w-full rounded border border-purple-200 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                                    class="mt-1 w-full rounded border border-purple-200 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600" required>
                             @error('qty')
                                 <div class="mt-2 text-sm text-red-500">{{ $message }}</div>
                             @enderror
@@ -144,28 +143,28 @@
                             <i class="ri-file-text-line mr-1"></i> Description
                         </label>
                         <textarea name="description" rows="3"
-                                  class="mt-1 w-full rounded border border-purple-200 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
-                                  required>{{ old('description') }}</textarea>
+                                    class="mt-1 w-full rounded border border-purple-200 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
+                                    required>{{ old('description') }}</textarea>
                         @error('description')
                             <div class="mt-2 text-sm text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <!-- Action Buttons: Submit, Cancel -->
-                    <div class="flex flex-col gap-2 sm:flex-row">
+                    <div class="flex flex-col gap-3 pt-3 sm:flex-row">
                         <button type="submit"
-                                class="w-full rounded-full border-2 border-transparent bg-purple-600 px-4 py-2 text-center font-medium text-white transition duration-200 hover:bg-purple-700 sm:w-auto">
+                                class="btn btn-purple-to-pink rounded-full shadow-xl">
                             <i class="ri-save-line"></i> Save
                         </button>
                         <a href="{{ route('products.index') }}"
-                           class="w-full rounded-full border-2 border-purple-600 px-4 py-2 text-center font-medium text-purple-600 transition duration-200 hover:bg-purple-600 hover:text-white sm:w-auto">
+                            class="btn btn-outline-purple rounded-full">
                             <i class="ri-close-line"></i> Cancel
                         </a>
                     </div>
                 </div>
             </form>
         </div>
-    </div>
+    </section>
 
     <!-- Modal: Full Image Viewer -->
     <div id="newImageModal"
