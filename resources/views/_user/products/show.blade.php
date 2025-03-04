@@ -61,7 +61,6 @@
 
             <!-- Right: Product Info -->
             <div class="w-full rounded-xl bg-white bg-opacity-50 p-4 shadow-lg backdrop-blur-md sm:p-6 lg:w-1/2">
-
                 <!-- Product Title and Attributes -->
                 <div class="mb-4">
                     <h2 class="text-3xl font-extrabold text-purple-800 sm:text-4xl">{{ $product->name }}</h2>
@@ -116,17 +115,35 @@
                     </a>
 
                     <!-- Delete Form -->
-                    <form action="{{ route('products.destroy', $product) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this artwork?')" class="w-full lg:w-auto">
+                    <form action="{{ route('products.destroy', $product) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this artwork?')" class="w-full sm:w-auto">
                         @csrf
                         @method('DELETE')
                         <button type="submit"
-                                class="btn btn-outline-pink rounded-full lg:w-auto"></i>
+                                class="btn btn-outline-pink rounded-full"></i>
                             Delete
                         </button>
                     </form>
 
-                </div>
+                    <!-- Auction Button -->
+                    @if ($product->auction)
+                        <a href="{{ route('auctions.show', $product->auction) }}"
+                            class="btn btn-white rounded-full">
+                            <i class="ri-eye-line"></i>
+                            View Auction
+                        </a>
+                    @else
+                        <form action="{{ route('auctions.store') }}" method="POST" id="start-auction-form" class="w-full sm:w-auto">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <input type="hidden" name="price" value="{{ $product->price }}">
+                        
+                            <button type="submit" class="btn btn-purple-to-pink rounded-full">
+                                Start Auction
+                            </button>
+                        </form>
+                    @endif
 
+                </div>
             </div>
         </div>
     </section>

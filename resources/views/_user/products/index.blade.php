@@ -28,47 +28,50 @@
         @endif
 
         <!-- Artwork Cards Grid -->
-        <div class="grid w-full gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <div class="grid w-full gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             @foreach ($products as $product)
-                <div class="relative flex max-w-sm flex-col overflow-hidden rounded-xl bg-purple-900 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <div class="relative flex flex-col overflow-hidden rounded-xl bg-gradient-to-tl from-purple-700 via-purple-900 to-indigo-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-yellow-500/30 hover:ring-2 hover:ring-yellow-400">
                     
                     <!-- Clickable Overlay -->
-                    <a href="{{ route('products.show', $product) }}" class="absolute left-0 top-0 z-20 h-full w-full">&nbsp;</a>
+                    <a href="{{ route('products.show', $product) }}" class="absolute inset-0 z-20">&nbsp;</a>
 
                     <!-- Artwork Image -->
-                    <div class="h-auto overflow-hidden">
-                        <div class="relative h-56 overflow-hidden">
-                            <img src="{{ asset($product->images) }}" alt="">
-                        </div>
+                    <div class="relative h-32 w-full overflow-hidden sm:h-40 md:h-48 lg:h-56">
+                        <img src="{{ asset($product->images) }}" alt="{{ $product->name }}" class="h-full w-full object-cover transition-transform duration-500 hover:scale-105">
+
+                        <!-- Auctioned Badge (Visible only if the product has an auction) -->
+                        @if ($product->auction) 
+                            <div class="absolute left-2 top-2 z-30 flex items-center gap-1 rounded-full bg-yellow-500 px-3 py-1 text-xs font-semibold text-gray-800 shadow-md">
+                                <i class="ri-gavel-line text-sm"></i> Auctioned
+                            </div>
+                        @endif
                     </div>
 
                     <!-- Artwork Details -->
-                    <div class="p-3 px-4 text-purple-100">
-                        <h3 class="font-bold text-yellow-300">
+                    <div class="z-10 p-3 text-white">
+                        <!-- Product Title -->
+                        <h3 class="truncate text-sm font-semibold text-yellow-300">
                             {{ $product->name }}
                         </h3>
 
-                        <div class="mb-3 flex flex-col justify-between">
-                            <p class="line-clamp-5 text-xs text-purple-300">
-                                {{ $product->attributes['year'] }} • {{ $product->attributes['type'] }}
-                            </p>
-                            <p class="line-clamp-5 text-xs text-purple-300">
-                                {{ $product->attributes['size'] }}
-                            </p>
+                        <!-- Compact Product Info -->
+                        <div class="mt-1 text-xs text-gray-300">
+                            <p>{{ $product->attributes['year'] }} • {{ $product->attributes['type'] }}</p>
+                            <p>{{ $product->attributes['size'] }}</p>
                         </div>
 
-                        <!-- Price and Action -->
-                        <div class="flex items-center justify-between align-middle">
-                            <p class="text-sm font-semibold text-yellow-200">
-                                ₱{{ $product->price }}
+                        <!-- Price and Auction Info -->
+                        <div class="mt-3 flex items-center justify-between text-sm">
+                            <p class="font-semibold text-yellow-400">
+                                ₱{{ number_format($product->price, 2) }}
                             </p>
 
-                            {{-- <div class="relative z-40 flex items-center gap-2">
-                                <a href="" class="z-30 hover:text-yellow-300">
-                                    <i class="ri-heart-line text-2xl"></i>
-                                    {{ $product->bids()->count() }}
-                                </a>
-                            </div> --}}
+                            @if ($product->auction)
+                                <div class="flex items-center gap-1 text-xs text-yellow-300">
+                                    <i class="ri-auction-line text-sm"></i>
+                                    {{ $product->auction->bids()->count() }} bids
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>

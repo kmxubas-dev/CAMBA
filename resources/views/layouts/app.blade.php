@@ -160,6 +160,13 @@
                     </li>
 
                     <li class="group mb-1 text-white">
+                        <a href="{{ route('auctions.index') }}" class="flex items-center rounded-md px-4 py-2 hover:bg-purple-950">
+                            <i class="ri-auction-fill mr-3 text-lg"></i>
+                            <span class="text-sm font-semibold">My Auctions</span>
+                        </a>
+                    </li>
+
+                    <li class="group mb-1 text-white">
                         <a href="" class="flex items-center rounded-md px-4 py-2 hover:bg-purple-950">
                             <i class="ri-poker-hearts-fill mr-3 text-lg"></i>
                             <span class="text-sm font-semibold">Wishlist</span>
