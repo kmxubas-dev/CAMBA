@@ -14,6 +14,11 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
+            $table->enum('status', [
+                'active',
+                'inactive',
+                'sold',
+            ])->default('active');
             $table->string('name');
             $table->integer('qty');
             $table->decimal('price', total:14, places:4);

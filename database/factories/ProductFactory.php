@@ -19,6 +19,7 @@ class ProductFactory extends Factory
     {
         return [
             'user_id' => User::factory(), // Automatically associate with a user
+            'status' => 'active',
             'name' => fake()->word,
             'qty' => fake()->numberBetween(1, 10),
             'price' => fake()->randomFloat(2, 300, 10000),
