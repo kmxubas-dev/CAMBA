@@ -20,15 +20,14 @@ class ProductAuctionFactory extends Factory
         return [
             'product_id' => Product::factory(),
             'status' => $this->faker->randomElement([
-                'inactive',
                 'active',
-                'completed',
-                'cancelled',
-                'sold'
+                'paused',
+                'ended',
+                'sold',
             ]),
             'price' => $this->faker->randomFloat(4, 1000, 10000),
-            'start' => $this->faker->dateTimeBetween('-12 hours', 'now'),
-            'end' => $this->faker->dateTimeBetween('now', '+2 days'),
+            'start' => $this->faker->dateTimeBetween('-12 hours', 'now')->format('Y-m-d H:i:00'),
+            'end' => $this->faker->dateTimeBetween('now', '+2 days')->format('Y-m-d H:i:00'),
         ];
     }
 }

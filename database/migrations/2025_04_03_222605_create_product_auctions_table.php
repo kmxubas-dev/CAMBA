@@ -15,12 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products');
             $table->enum('status', [
-                'inactive',
                 'active',
-                'completed',
-                'cancelled',
-                'sold'
-            ])->default('inactive');
+                'paused',
+                'ended',
+                'sold',
+            ])->default('active');
             $table->decimal('price', total:14, places:4);
             $table->datetime('start');
             $table->datetime('end');
