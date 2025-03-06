@@ -87,7 +87,11 @@ class ProductAuctionController extends Controller
 
         $bids_top10 = $auction->bids()->orderByDesc('amount')->take(10)->get();
 
-        return view('_user.auctions.show', [
+        $view = Auth::user()->id === $auction->product->user_id
+            ? '_user.auctions.show'
+            : '_user.auctions.show_buyer';
+
+        return view($view, [
             'auction' => $auction,
             'bids_top10' => $bids_top10,
             'timeRemaining' => $timeRemaining,

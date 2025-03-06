@@ -258,7 +258,7 @@
                                         <!-- Content: Name and Time -->
                                         <div class="flex w-full flex-col sm:flex-row sm:items-center sm:space-x-2">
                                             <div class="text-xs font-semibold text-gray-800 sm:text-sm">{{ $bid->user->name }}</div>
-                                            <span class="mt-1 text-xs text-gray-500 sm:mt-0">{{ $bid->created_at->diffForHumans() }}</span>
+                                            <span class="mt-1 text-xs text-gray-500 sm:mt-0">{{ $bid->updated_at->diffForHumans() }}</span>
                                         </div>
                                     </div>                    
                                     

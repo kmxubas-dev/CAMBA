@@ -19,4 +19,7 @@ Route::middleware([
     Route::resource('products', ProductController::class);
     Route::resource('auctions', ProductAuctionController::class);
     Route::resource('bids', ProductBidController::class);
+
+    Route::post('auctions/{auction}/bid', [ProductBidController::class, 'storeOrUpdate'])
+        ->name('auctions.bid');
 });
