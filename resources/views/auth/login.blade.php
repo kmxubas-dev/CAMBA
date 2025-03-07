@@ -1,44 +1,59 @@
 @extends('layouts.auth')
 
 @section('content')
-<form method="POST" action="{{ route('login') }}" class="z-20 mx-6 w-full rounded-2xl bg-white px-6 pb-12 pt-4 shadow-xl sm:w-full lg:w-1/2 lg:px-10">
-    @csrf
+    <form method="POST" action="{{ route('login') }}"
+        class="relative z-20 w-full rounded-3xl bg-white/70 px-6 py-10 shadow-2xl backdrop-blur-md sm:max-w-full sm:px-8 md:max-w-lg md:px-10 lg:max-w-xl xl:max-w-2xl">
+        @csrf
 
-    <div class="text-purple-800">
-        <div class="m-auto max-w-[25rem] px-24">
-            <a href="/">
-                <img src="{{ asset('assets/img/logo_text.png') }}" alt="" class="">
+        <!-- Centered Purple Logo -->
+        <div class="mb-6 flex justify-center">
+            <a href="/" class="inline-block">
+                <img src="{{ asset('assets/img/logo_text.png') }}" alt="Logo" class="h-12">
             </a>
         </div>
 
-        <hr class="my-4">
+        <!-- Heading -->
         <h1 class="mb-1 text-center text-3xl font-bold text-purple-900">Login</h1>
-        <p class="mb-8 w-full text-center text-sm font-medium tracking-wide">Enter account details</p>
-    </div>
-    <div class="space-y-4 font-medium text-purple-950">
-        <x-validation-errors class="mb-4" />
+        <p class="mb-6 text-center text-sm text-purple-700">Enter your account details to sign in.</p>
 
-        <input id="email" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="Email Addres" class="block w-full rounded-full border-transparent bg-purple-300 px-4 py-3 text-sm placeholder:text-purple-100 focus:border-transparent focus:bg-purple-400 focus:ring-0" />
+        <!-- Validation Errors -->
+        <x-validation-errors class="mb-4 text-sm text-red-600" />
 
-        <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="Password" class="block w-full rounded-full border-transparent bg-purple-300 px-4 py-3 text-sm placeholder:text-purple-100 focus:border-transparent focus:bg-purple-400 focus:ring-0" />
-    </div>
-    <div class="mt-6 text-center">
-        <button class="w-full rounded-full bg-purple-500 py-2 text-white transition-all hover:bg-purple-800">Login</button>
+        <!-- Form Inputs -->
+        <div class="space-y-4">
+            <input id="email" type="email" name="email" :value="old('email')" required autofocus autocomplete="username"
+                placeholder="Email Address"
+                class="w-full rounded-full border-none bg-purple-100 px-4 py-3 text-sm text-purple-900 placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400" />
 
+            <input id="password" type="password" name="password" required autocomplete="current-password"
+                placeholder="Password"
+                class="w-full rounded-full border-none bg-purple-100 px-4 py-3 text-sm text-purple-900 placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400" />
+        </div>
+
+        <!-- Submit Button -->
+        <div class="mt-6 text-center">
+            <button type="submit"
+                    class="w-full rounded-full bg-gradient-to-r from-purple-500 to-purple-700 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:scale-105 hover:from-purple-600 hover:to-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2">
+                🔐 Login
+            </button>
+        </div>
+
+        <!-- Forgot Password Link -->
         @if (Route::has('password.request'))
-            <p class="mt-4">
-                <a class="rounded-md text-sm text-purple-800 underline hover:text-purple-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2" href="{{ route('password.request') }}">
+            <div class="mt-4 text-center">
+                <a href="{{ route('password.request') }}"
+                class="text-sm text-purple-800 underline hover:text-purple-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
                     {{ __('Forgot your password?') }}
                 </a>
-            </p>
+            </div>
         @endif
 
-        <p class="mt-8 text-sm text-purple-800">
+        <!-- Register Prompt -->
+        <div class="mt-6 text-center text-sm text-purple-800">
             Don't have an account?
-            <a href="{{ route('register') }}" class="cursor-pointer font-bold text-purple-900 underline"> Signup</a>
-        </p>
-    </div>
-</form>
+            <a href="{{ route('register') }}" class="font-bold text-purple-900 underline hover:text-purple-700">Sign up</a>
+        </div>
+    </form>
 @endsection
 
 
