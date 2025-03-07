@@ -153,19 +153,66 @@
                     </li>
 
                     <li class="group mb-1 text-white">
-                        <a href="{{ route('products.index') }}" class="flex items-center rounded-md px-4 py-2 hover:bg-purple-950">
-                            <i class="ri-shapes-fill mr-3 text-lg"></i>
-                            <span class="text-sm font-semibold">My Artworks</span>
-                        </a>
+                        <button type="button" class="sidebar-dropdown-toggle flex w-full items-center rounded-md px-4 py-2 font-semibold transition hover:bg-purple-950">
+                            <i class="ri-brush-3-fill mr-3 text-lg"></i>
+                            <span class="text-sm">My Studio</span>
+                            <i class="ri-arrow-down-s-line ml-auto transition-transform group-[.selected]:rotate-90"></i>
+                        </button>
+                        <ul class="mt-2 hidden space-y-3 pl-7 text-purple-200 group-[.selected]:block">
+                            <li>
+                                <a href="{{ route('products.index') }}" class="flex items-center text-sm transition hover:text-white">
+                                    <i class="ri-image-fill mr-2 text-sm text-purple-400"></i>
+                                    My Artworks
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('auctions.index') }}" class="flex items-center text-sm transition hover:text-white">
+                                    <i class="ri-auction-fill mr-2 text-sm text-purple-400"></i>
+                                    My Auctions
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                     <li class="group mb-1 text-white">
-                        <a href="{{ route('auctions.index') }}" class="flex items-center rounded-md px-4 py-2 hover:bg-purple-950">
-                            <i class="ri-auction-fill mr-3 text-lg"></i>
-                            <span class="text-sm font-semibold">My Auctions</span>
-                        </a>
+                        <button type="button" class="sidebar-dropdown-toggle flex w-full items-center rounded-md px-4 py-2 font-semibold transition hover:bg-purple-950">
+                            <i class="ri-store-3-fill mr-3 text-lg"></i>
+                            <span class="text-sm">Marketplace</span>
+                            <i class="ri-arrow-down-s-line ml-auto transition-transform group-[.selected]:rotate-90"></i>
+                        </button>
+                        <ul class="mt-2 hidden space-y-3 pl-7 text-purple-200 group-[.selected]:block">
+                            <li>
+                                <a 
+                                    href="#" 
+                                    {{-- href="{{ route('products.browse') }}" --}}
+                                    class="flex items-center text-sm transition hover:text-white"
+                                >
+                                    <i class="ri-gallery-fill mr-2 text-sm text-purple-400"></i>
+                                    Browse Artworks
+                                </a>
+                            </li>
+                            <li>
+                                <a 
+                                    href="#" 
+                                    {{-- href="{{ route('auctions.browse') }}" --}}
+                                    class="flex items-center text-sm transition hover:text-white"
+                                >
+                                    <i class="ri-auction-fill mr-2 text-sm text-purple-400"></i>
+                                    Browse Auctions
+                                </a>
+                            </li>
+                            <li>
+                                <a 
+                                    href="{{ route('bids.index') }}" 
+                                    class="flex items-center text-sm transition hover:text-white"
+                                >
+                                    <i class="ri-hammer-fill mr-2 text-sm text-purple-400"></i>
+                                    Auctions Joined
+                                </a>
+                            </li>
+                        </ul>
                     </li>
-
+                    
                     <li class="group mb-1 text-white">
                         <a href="" class="flex items-center rounded-md px-4 py-2 hover:bg-purple-950">
                             <i class="ri-poker-hearts-fill mr-3 text-lg"></i>
