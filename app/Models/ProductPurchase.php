@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class ProductAuction extends Model
+class ProductPurchase extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProductAuctionFactory> */
+    /** @use HasFactory<\Database\Factories\ProductPurchaseFactory> */
     use HasFactory;
 
     /**
@@ -19,10 +18,12 @@ class ProductAuction extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'purchasable_type',
+        'purchasable_id',
+        'amount',
         'status',
-        'price',
-        'start',
-        'end',
+        'purchase_info',
+        'payment_info',
     ];
 
     /**
@@ -33,29 +34,29 @@ class ProductAuction extends Model
     protected function casts(): array
     {
         return [
-            'start' => 'datetime',
-            'end' => 'datetime',
+            'purchase_info' => 'array',
+            'payment_info'  => 'array',
         ];
     }
 
     /* ------------------------- Relationships ------------------------- */
+
+    // User
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     // Product
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'product_id');
     }
-
-    // ProductBid
-    public function bids(): HasMany
-    {
-        return $this->hasMany(ProductBid::class, 'auction_id');
-    }
     
-    // ProductBid
-    public function purchases(): MorphMany
+    // Product || ProductAuction
+    public function purchasable(): MorphTo
     {
-        return $this->morphMany(ProductPurchase::class, 'purchasable');
+        return $this->morphTo();
     }
 
     /* ----------------------------------------------------------------- */
