@@ -89,19 +89,19 @@
                 <!-- Payment Methods -->
                 <div class="rounded-md">
                     <h4 class="mb-3 text-center text-lg font-semibold text-white">Choose Payment Method</h4>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-3 gap-4">
                         @php
                             $methods = [
                                 'gcash' => 'GCash',
                                 'grab_pay' => 'GrabPay',
-                                'maya' => 'Maya',
+                                // 'maya' => 'Maya',
                                 'cod' => 'Cash on Delivery',
                             ];
                         @endphp
-            
+
                         @foreach ($methods as $value => $label)
                             <label
-                                class="group relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-transparent bg-white bg-opacity-80 px-6 py-4 text-center text-sm font-medium text-purple-800 shadow-lg backdrop-blur-md transition-all duration-300 hover:border-purple-600 hover:bg-purple-50 hover:ring-2 hover:ring-purple-300 peer-checked:border-purple-600 peer-checked:ring-2 peer-checked:ring-purple-400">
+                                class="group relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-transparent bg-white bg-opacity-80 px-4 py-6 text-center text-sm font-medium text-purple-800 shadow-lg backdrop-blur-md transition-all duration-300 hover:border-purple-600 hover:bg-purple-50 hover:ring-2 hover:ring-purple-300 peer-checked:border-purple-600 peer-checked:ring-2 peer-checked:ring-purple-400">
                                 <input type="radio" name="payment_method" value="{{ $value }}"
                                        class="peer hidden" required>
                                 <div class="flex flex-col items-center gap-2 peer-checked:font-semibold peer-checked:text-purple-700">

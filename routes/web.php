@@ -24,4 +24,11 @@ Route::middleware([
 
     Route::post('auctions/{auction}/bid', [ProductBidController::class, 'storeOrUpdate'])
         ->name('auctions.bid');
+
+    Route::prefix('purchases/paymongo')->name('purchases.paymongo.')->group(function () {
+        Route::get('/success', [ProductPurchaseController::class, 'paymongoSuccess'])
+            ->name('success');
+        Route::get('/failed', [ProductPurchaseController::class, 'paymongoFailed'])
+            ->name('failed');
+    });
 });

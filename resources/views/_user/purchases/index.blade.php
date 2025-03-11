@@ -26,6 +26,14 @@
             </div>
         @endif
 
+        <!-- Error Message -->
+        @if(session('error'))
+            <div class="flex items-center rounded-lg border-2 border-fuchsia-400 bg-fuchsia-100 p-3 py-2">
+                <i class="ri-error-warning-line text-2xl text-fuchsia-600"></i>
+                <span class="ml-2 text-sm font-semibold text-fuchsia-700">{{ session('error') }}</span>
+            </div>
+        @endif
+
         <!-- Purchases List -->
         @if($purchases->isEmpty())
             <div class="flex items-center justify-center py-10">
