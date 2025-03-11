@@ -241,8 +241,8 @@
                         @endif
                     </div>
 
-                    <!-- Quick Bid Form -->
-                    @if($auction->status === 'active')  <!-- Only show this section if the auction is active -->
+                    @if($auction->status === 'active')
+                        <!-- Quick Bid Form -->
                         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3">
                             @foreach([1000, 3000, 5000, 10000, 30000, 50000] as $amount)
                                 @php
@@ -302,6 +302,16 @@
                         <p class="mt-4 text-center font-semibold text-gray-600">
                             This auction is no longer active. Bid actions are no longer allowed.
                         </p>
+                    
+                        @if($auction->status === 'ended' && $isUserHighestBidder)
+                            <!-- Buy Now Button -->
+                            <div class="mt-6 text-center">
+                                <a href="{{ route('purchases.create', ['type' => 'product_auctions', 'id' => $auction->id]) }}"
+                                    class="btn btn-purple-to-pink inline-flex rounded-lg shadow-lg">
+                                    <i class="ri-shopping-cart-2-line"></i> Buy Now
+                                </a>
+                            </div>
+                        @endif
                     @endif
                 </div>
             </div>

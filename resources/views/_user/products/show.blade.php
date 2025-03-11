@@ -106,43 +106,57 @@
 
                 <!-- Action Buttons: Edit, Back, Delete -->
                 <div class="mt-6 flex flex-col items-center gap-2 sm:flex-row sm:justify-start">
-
-                    <!-- Edit Button -->
-                    <a href="{{ route('products.edit', $product->id) }}"
-                        class="btn btn-purple rounded-full">
-                        <i class="ri-edit-box-line"></i>
-                        Edit
-                    </a>
-
-                    <!-- Delete Form -->
-                    <form action="{{ route('products.destroy', $product) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this artwork?')" class="w-full sm:w-auto">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                                class="btn btn-outline-pink rounded-full"></i>
-                            Delete
-                        </button>
-                    </form>
-
-                    <!-- Auction Button -->
-                    @if ($product->auction)
-                        <a href="{{ route('auctions.show', $product->auction) }}"
-                            class="btn btn-white rounded-full">
-                            <i class="ri-eye-line"></i>
-                            View Auction
+                    @if (auth()->id() === $product->user_id)
+                        <!-- Edit Button -->
+                        <a href="{{ route('products.edit', $product->id) }}" class="btn btn-purple rounded-full">
+                            <i class="ri-edit-box-line"></i>
+                            Edit
                         </a>
-                    @else
-                        <form action="{{ route('auctions.store') }}" method="POST" id="start-auction-form" class="w-full sm:w-auto">
+
+                        <!-- Delete Form -->
+                        <form action="{{ route('products.destroy', $product) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this artwork?')" class="w-full sm:w-auto">
                             @csrf
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <input type="hidden" name="price" value="{{ $product->price }}">
-                        
-                            <button type="submit" class="btn btn-purple-to-pink rounded-full">
-                                Start Auction
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-outline-pink rounded-full">
+                                Delete
                             </button>
                         </form>
+
+                        <!-- Auction Button -->
+                        @if ($product->auction)
+                            <a href="{{ route('auctions.show', $product->auction) }}" class="btn btn-white rounded-full">
+                                <i class="ri-eye-line"></i>
+                                View Auction
+                            </a>
+                        @else
+                            <form action="{{ route('auctions.store') }}" method="POST" id="start-auction-form" class="w-full sm:w-auto">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <input type="hidden" name="price" value="{{ $product->price }}">
+
+                                <button type="submit" class="btn btn-purple-to-pink rounded-full">
+                                    Start Auction
+                                </button>
+                            </form>
+                        @endif
                     @endif
 
+                    @if(auth()->id() !== $product->user_id)
+                        <div class="flex flex-col items-center gap-2 sm:flex-row sm:justify-start">
+                            @if ($product->qty > 0 && !$product->auction)
+                                <a href="{{ route('purchases.create', ['type' => 'products', 'id' => $product->id]) }}"
+                                class="btn btn-purple-to-pink rounded-full shadow-lg">
+                                    <i class="ri-shopping-cart-line"></i> Buy Now
+                                </a>
+                            @endif
+
+                            @if ($product->auction)
+                                <a href="{{ route('auctions.show', $product->auction) }}" class="btn btn-white rounded-full">
+                                    <i class="ri-eye-line"></i> View Auction
+                                </a>
+                            @endif
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

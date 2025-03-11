@@ -201,29 +201,20 @@
                                     Browse Auctions
                                 </a>
                             </li>
-                            <li>
-                                <a 
-                                    href="{{ route('bids.index') }}" 
-                                    class="flex items-center text-sm transition hover:text-white"
-                                >
-                                    <i class="ri-hammer-fill mr-2 text-sm text-purple-400"></i>
-                                    Auctions Joined
-                                </a>
-                            </li>
                         </ul>
                     </li>
-                    
+
                     <li class="group mb-1 text-white">
-                        <a href="" class="flex items-center rounded-md px-4 py-2 hover:bg-purple-950">
-                            <i class="ri-poker-hearts-fill mr-3 text-lg"></i>
-                            <span class="text-sm font-semibold">Wishlist</span>
+                        <a href="{{ route('bids.index') }}" class="flex items-center rounded-md px-4 py-2 hover:bg-purple-950">
+                            <i class="ri-auction-fill mr-3 text-lg"></i>
+                            <span class="text-sm font-semibold">Auctions joined</span>
                         </a>
                     </li>
 
                     <li class="group mb-1 text-white">
-                        <a href="" class="flex items-center rounded-md px-4 py-2 hover:bg-purple-950">
-                            <i class="ri-group-fill mr-3 text-lg"></i>
-                            <span class="text-sm font-semibold">Following</span>
+                        <a href="{{ route('purchases.index') }}" class="flex items-center rounded-md px-4 py-2 hover:bg-purple-950">
+                            <i class="ri-shopping-bag-3-fill mr-3 text-lg"></i>
+                            <span class="text-sm font-semibold">All Purchases</span>
                         </a>
                     </li>
 
