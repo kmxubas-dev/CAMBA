@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class ProductAuction extends Model
@@ -39,6 +40,19 @@ class ProductAuction extends Model
     }
 
     /* ------------------------- Relationships ------------------------- */
+
+    // User
+    public function user(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            User::class,
+            Product::class,
+            'id',
+            'id',
+            'product_id',
+            'user_id'
+        );
+    }
 
     // Product
     public function product(): BelongsTo
