@@ -21,7 +21,7 @@ class ProductBidFactory extends Factory
         return [
             'auction_id' => ProductAuction::factory(),
             'user_id' => User::factory(),
-            'amount' => $this->faker->randomFloat(4, 1000, 10000),
+            'amount' => $this->faker->randomFloat(2, 1000, 10000),
         ];
     }
 }
