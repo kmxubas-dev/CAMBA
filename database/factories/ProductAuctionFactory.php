@@ -25,7 +25,7 @@ class ProductAuctionFactory extends Factory
                 'ended',
                 'sold',
             ]),
-            'price' => $this->faker->randomFloat(4, 1000, 10000),
+            'price' => $this->faker->randomFloat(2, 1000, 10000),
             'start' => $this->faker->dateTimeBetween('-12 hours', 'now')->format('Y-m-d H:i:00'),
             'end' => $this->faker->dateTimeBetween('now', '+2 days')->format('Y-m-d H:i:00'),
         ];
