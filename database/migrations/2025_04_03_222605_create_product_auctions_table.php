@@ -20,7 +20,7 @@ return new class extends Migration
                 'ended',
                 'sold',
             ])->default('active');
-            $table->decimal('price', total:14, places:4);
+            $table->decimal('price', total:14, places:2);
             $table->datetime('start');
             $table->datetime('end');
             $table->timestamps();

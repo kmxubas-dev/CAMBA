@@ -21,7 +21,7 @@ return new class extends Migration
             ])->default('active');
             $table->string('name');
             $table->integer('qty');
-            $table->decimal('price', total:14, places:4);
+            $table->decimal('price', total:14, places:2);
             $table->text('images');
             $table->text('description')->nullable();
             $table->json('attributes')->nullable();
