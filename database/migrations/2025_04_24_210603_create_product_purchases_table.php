@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('product_id')->constrained('products');
             $table->morphs('purchasable');
-            $table->decimal('amount', total:14, places:4);
+            $table->decimal('amount', total:14, places:2);
             $table->string('status')->default('pending');
             $table->json('purchase_info')->nullable(); // { code, product_snapshot, etc. }
             $table->json('payment_info')->nullable(); // { method, status, reference }

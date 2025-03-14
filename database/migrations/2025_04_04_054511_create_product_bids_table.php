@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('auction_id')->constrained('product_auctions');
             $table->foreignId('user_id')->constrained('users');
-            $table->decimal('amount', total:14, places:4);
+            $table->decimal('amount', total:14, places:2);
             $table->timestamps();
         });
     }
