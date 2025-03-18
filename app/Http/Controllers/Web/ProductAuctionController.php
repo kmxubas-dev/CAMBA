@@ -166,4 +166,34 @@ class ProductAuctionController extends Controller
             ->route('products.show', $auction->product)
             ->with('success', 'The auction and its bids have been deleted.');
     }
+
+    // -------------------------------------------------------------------------------- //
+    
+    public function index_buyer(Request $request)
+    {
+        $auctions = ProductAuction::with(['user', 'product', 'bids' => function ($query) {
+                $query->orderByDesc('amount')->limit(1);
+            }])
+            ->whereHas('product', function ($query) {
+                $query->where('user_id', '!=', Auth::id());
+            })
+            ->where('status', 'active')
+            ->inRandomOrder()
+            ->paginate(6);
+
+        $auctions->getCollection()->transform(function ($auction) {
+            $timeRemaining = Carbon::now()->diffInSeconds($auction->end, false);
+            $auction->timeRemaining = $timeRemaining > 0 ? $timeRemaining : 0;
+            return $auction;
+        });
+
+        if ($request->ajax()) {
+            return response()->json([
+                'auctions' => $auctions->items(),
+                'next_page_url' => $auctions->nextPageUrl(),
+            ]);
+        }
+
+        return view('_user.auctions.index_buyer', compact('auctions'));
+    }
 }

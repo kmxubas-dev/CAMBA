@@ -12,7 +12,7 @@
         <div class="mx-1 flex items-center justify-between">
             <h3 class="text-2xl">Auction for: <span class="font-semibold text-purple-700">{{ $auction->product->name }}</span></h3>
 
-            <a href="{{ route('auctions.index') }}"
+            <a href="{{ url()->previous() }}"
                 class="btn btn-purple w-auto rounded-xl px-3 py-1.5 shadow-lg">
                 <i class="ri-arrow-left-line text-xl"></i>
                 <span>Back</span>

@@ -192,8 +192,7 @@
                             </li>
                             <li>
                                 <a 
-                                    href="#" 
-                                    {{-- href="{{ route('auctions.browse') }}" --}}
+                                    href="{{ route('auctions.index.buyer') }}"
                                     class="flex items-center text-sm transition hover:text-white"
                                 >
                                     <i class="ri-auction-fill mr-2 text-sm text-purple-400"></i>
