@@ -134,4 +134,22 @@ class ProductController extends Controller
             ->route('products.index')
             ->with('success', 'Artwork and its related data deleted successfully!');
     }
+
+    // -------------------------------------------------------------------------------- //
+    
+    public function index_buyer(Request $request)
+    {
+        $products = Product::with('user', 'auction')->where('user_id', '!=', Auth::id())
+            ->inRandomOrder()
+            ->paginate(8);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'products' => $products->items(),
+                'next_page_url' => $products->nextPageUrl(),
+            ]);
+        }
+
+        return view('_user.products.index_buyer', compact('products'));
+    }
 }

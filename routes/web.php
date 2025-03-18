@@ -22,6 +22,9 @@ Route::middleware([
     Route::resource('bids', ProductBidController::class);
     Route::resource('purchases', ProductPurchaseController::class);
 
+    Route::get('products-buyer', [ProductController::class, 'index_buyer'])
+        ->name('products.index.buyer');
+
     Route::post('auctions/{auction}/bid', [ProductBidController::class, 'storeOrUpdate'])
         ->name('auctions.bid');
 

@@ -13,7 +13,7 @@
         <div class="mx-1 flex items-center justify-between">
             <h3 class="text-2xl">Show Artwork</h3>
 
-            <a href="{{ route('products.index') }}"
+            <a href="{{ url()->previous() }}"
                 class="btn btn-purple w-auto rounded-xl px-3 py-1.5 shadow-lg">
                 <i class="ri-arrow-left-line text-xl"></i>
                 <span>Back</span>

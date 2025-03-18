@@ -183,8 +183,7 @@
                         <ul class="mt-2 hidden space-y-3 pl-7 text-purple-200 group-[.selected]:block">
                             <li>
                                 <a 
-                                    href="#" 
-                                    {{-- href="{{ route('products.browse') }}" --}}
+                                    href="{{ route('products.index.buyer') }}"
                                     class="flex items-center text-sm transition hover:text-white"
                                 >
                                     <i class="ri-gallery-fill mr-2 text-sm text-purple-400"></i>
