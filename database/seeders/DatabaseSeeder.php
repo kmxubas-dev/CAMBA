@@ -32,5 +32,12 @@ class DatabaseSeeder extends Seeder
             ProductBidSeeder::class,
             ProductPurchaseSeeder::class
         ]);
+        
+        User::factory()->create([
+            'type'  => 'admin',
+            'fname' => 'Admin',
+            'lname' => '1',
+            'email' => 'admin@email.com',
+        ]);
     }
 }
