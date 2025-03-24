@@ -17,15 +17,11 @@ class AppController extends Controller
      */
     public function welcome()
     {
-        $users = User::withCount([
-                        'products',
-                        'products as auctions_count' => function ($query) {
-                            $query->whereHas('auction');
-                        }
-                    ])
-                    ->inRandomOrder()
-                    ->limit(6)
-                    ->get();
+        $users = User::withCount(['products', 'auctions', 'purchases'])
+            ->where('type', '!=', 'admin')
+            ->inRandomOrder()
+            ->limit(6)
+            ->get();
 
         return view('welcome', compact('users'));
     }

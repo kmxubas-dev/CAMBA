@@ -332,19 +332,27 @@
                 <div class="container mx-auto px-6 py-6">
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6">
                         @foreach ($users as $user)
-                            <div class="flex flex-col items-center rounded-xl border border-purple-500 bg-purple-800 p-4">
-                                <img class="aspect-square w-full rounded-xl object-cover" src="{{ asset($user->profile_photo_path) }}" alt="" />
-
+                            <div class="flex flex-col items-center rounded-xl border border-purple-500 bg-purple-900/50 p-4 shadow-lg backdrop-blur-md transition duration-300 hover:scale-105 hover:shadow-purple-600">
+                                <img class="aspect-square w-full rounded-xl border-2 border-purple-400 object-cover shadow-md" src="{{ asset($user->profile_photo_path) }}" alt="{{ $user->name }}" />
+                            
                                 <h1 class="text-l mt-4 text-center font-semibold capitalize text-yellow-300">{{ $user->name }}</h1>
-
+                            
                                 <p class="mt-1 text-xs font-medium capitalize text-purple-100">Artworks: {{ $user->products_count }}</p>
                                 <p class="mt-1 text-xs font-medium capitalize text-purple-100">Auctions: {{ $user->auctions_count }}</p>
-
-                                {{-- <div class="mt-3 flex">
-                                    <button class="visible block cursor-pointer rounded-2xl bg-purple-600 px-8 py-3 text-xs font-semibold leading-none tracking-wide text-white hover:bg-purple-600">
-                                        Follow
-                                    </button>
-                                </div> --}}
+                                <p class="mt-1 text-xs font-medium capitalize text-purple-100">Purchases: {{ $user->purchases_count }}</p>
+                            
+                                @php
+                                    $total = $user->products_count + $user->product_auctions_count + $user->product_purchases_count;
+                                    $max = 30; // adjust this based on expected max contribution
+                                    $percentage = min(100, ($total / $max) * 100);
+                                @endphp
+                            
+                                <div class="mt-4 w-full">
+                                    <div class="mb-1 text-center text-xs font-medium text-purple-200">Rating: {{ $total }}</div>
+                                    <div class="h-2 w-full rounded-full bg-purple-700">
+                                        <div class="h-full rounded-full bg-yellow-400 transition-all duration-500" style="width: {{ $percentage }}%"></div>
+                                    </div>
+                                </div>
                             </div>
                         @endforeach
                     </div>
