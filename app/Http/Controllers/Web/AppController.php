@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductAuction;
+use App\Models\ProductPurchase;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -77,4 +79,38 @@ class AppController extends Controller
 
         return view('_user.profile_show', compact('user'));
     }
+
+    /**
+     * Search
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $user = Auth::user();
+
+        $products = Product::with('user')
+            ->where('name', 'like', '%' . $query . '%')
+            ->take(6)
+            ->get();
+
+        $auctionProducts = ProductAuction::whereHas('product', function ($q) use ($query) {
+                $q->where('name', 'like', '%' . $query . '%');
+            })
+            ->with('product')
+            ->take(6)
+            ->get();
+
+        $purchaseProducts = ProductPurchase::whereHas('product', function ($q) use ($query) {
+                $q->where('name', 'like', '%' . $query . '%');
+            })
+            ->where('user_id', $user->id)
+            ->with('product')
+            ->take(6)
+            ->get();
+
+        return view('_user.search', compact('products', 'auctionProducts', 'purchaseProducts', 'query'));
+    }
+
 }

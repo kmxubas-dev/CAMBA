@@ -267,16 +267,22 @@
                             <i class="ri-search-line text-2xl text-purple-900"></i>
                         </button>
                         <div class="dropdown-menu z-30 hidden w-full max-w-xs rounded-md border border-gray-100 bg-white shadow-md shadow-black/5">
-                            <form action="" class="border-b border-b-gray-100 p-4">
+                            <form action="{{ route('search') }}" method="GET" class="border-b border-b-gray-100 p-4">
                                 <div class="relative w-full">
-                                    <input type="text" name="search" class="w-full rounded-md border border-gray-100 bg-gray-50 py-2 pl-10 pr-4 text-sm outline-none focus:border-blue-500" placeholder="Search...">
+                                    <input 
+                                        type="text" 
+                                        name="query" 
+                                        value="{{ request('query') }}" 
+                                        class="w-full rounded-md border border-gray-100 bg-gray-50 py-2 pl-10 pr-4 text-sm outline-none focus:border-blue-500" 
+                                        placeholder="Search..."
+                                    >
                                     <i class="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-gray-900"></i>
                                 </div>
                             </form>
                         </div>
                     </li>
 
-                    <!-- notifications icon -->
+                    {{-- <!-- notifications icon -->
                     <li class="dropdown">
                         <button type="button" class="dropdown-toggle mr-4 flex h-8 w-8 items-center justify-center rounded hover:bg-purple-200">
                             <i class="ri-notification-3-line text-2xl text-purple-900"></i>
@@ -383,7 +389,7 @@
                                 </ul>
                             </div>
                         </div>
-                    </li>
+                    </li> --}}
                 </ul>
             </nav>
             <!-- end navbar -->

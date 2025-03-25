@@ -38,4 +38,6 @@ Route::middleware([
         Route::get('/failed', [ProductPurchaseController::class, 'paymongoFailed'])
             ->name('failed');
     });
+    
+    Route::get('search', [AppController::class, 'search'])->name('search');
 });
