@@ -16,6 +16,8 @@ Route::middleware([
 ])->group(function () {
     Route::get('dashboard', [AppController::class, 'dashboard'])->name('dashboard');
     Route::get('profile', [AppController::class, 'profile'])->name('profile');
+    Route::get('profile-show/{user}', [AppController::class, 'showProfile'])
+        ->name('custom.profile.show');
 
     Route::resource('products', ProductController::class);
     Route::resource('auctions', ProductAuctionController::class);

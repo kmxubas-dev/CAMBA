@@ -64,15 +64,26 @@
                 <!-- Product Title and Attributes -->
                 <div class="mb-4">
                     <h2 class="text-3xl font-extrabold text-purple-800 sm:text-4xl">{{ $product->name }}</h2>
-                    <p class="mt-2 text-sm font-medium text-purple-700 sm:text-base">
+
+                    <p class="mt-1 text-sm font-medium text-purple-700 sm:text-base">
                         <span class="inline-flex items-center gap-1">
-                            <i class="ri-palette-line text-lg text-yellow-500"></i>
+                            <i class="ri-palette-line text-lg text-pink-500"></i>
                             {{ $product->attributes['type'] }}
                         </span>
                         <span class="text-gray-500">•</span>
                         <span class="inline-flex items-center gap-1">
-                            <i class="ri-calendar-line text-lg text-yellow-500"></i>
+                            <i class="ri-calendar-line text-lg text-pink-500"></i>
                             {{ $product->attributes['year'] }}
+                        </span>
+                    </p>
+
+                    <p class="text-sm text-gray-600">
+                        <span class="inline-flex items-center gap-1">
+                            <i class="ri-user-line text-lg text-pink-600"></i>
+                            <a href="{{ route('custom.profile.show', $product->user->id) }}" 
+                            class="font-medium text-purple-700 underline transition duration-150 ease-in-out hover:text-purple-900">
+                                {{ $product->user->name }}
+                            </a>
                         </span>
                     </p>
                 </div>

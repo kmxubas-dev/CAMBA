@@ -54,4 +54,27 @@ class AppController extends Controller
     {
         return 'Profile';
     }
+
+    /**
+     * Profile
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showProfile(User $user)
+    {
+        $user->load([
+            'info',
+            'products' => function ($query) {
+                $query->inRandomOrder()->take(6);
+            },
+            'auctions' => function ($query) {
+                $query->inRandomOrder()->take(6);
+            },
+            'purchases' => function ($query) {
+                $query->inRandomOrder()->take(6);
+            }
+        ]);
+
+        return view('_user.profile_show', compact('user'));
+    }
 }
