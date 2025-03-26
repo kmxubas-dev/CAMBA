@@ -35,15 +35,20 @@ class AppController extends Controller
      */
     public function dashboard()
     {
-        $user = User::find(Auth::user()->id);
+        $user = User::find(Auth::id());
         $products_count = $user->products()->count();
         $auctions_count = $user->products()->whereHas('auction')->count();
         $bids_count = $user->bids()->count();
+        $purchases_count = $user->purchases()->count();
 
-        $products = Product::inRandomOrder()->limit(8)->get();
+        $products = Product::with('user')
+            ->where('user_id', '!=', Auth::id())
+            ->inRandomOrder()
+            ->limit(8)
+            ->get();
 
         return view('dashboard', compact(
-            'products_count', 'auctions_count', 'bids_count', 'products'
+            'products_count', 'auctions_count', 'bids_count', 'purchases_count', 'products'
         ));
     }
 
