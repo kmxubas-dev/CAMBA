@@ -132,7 +132,7 @@
                         <a href="{{ route('profile.show') }}" class="flex items-center rounded-md p-2 hover:bg-purple-950">
                             <div class="relative h-10 w-10 flex-shrink-0">
                                 <div class="rounded-full bg-white p-1 focus:outline-none focus:ring">
-                                    <img class="h-8 w-8 rounded-full" src="https://laravelui.spruko.com/tailwind/ynex/build/assets/images/faces/9.jpg" alt=""/>
+                                    <img class="h-8 w-8 rounded-full" src="{{ asset(auth()->user()->profile_photo_path) }}" alt=""/>
                                     <div class="absolute left-7 top-0 h-3 w-3 animate-ping rounded-full border-2 border-white bg-lime-400"></div>
                                     <div class="absolute left-7 top-0 h-3 w-3 rounded-full border-2 border-white bg-lime-500"></div>
                                 </div>
