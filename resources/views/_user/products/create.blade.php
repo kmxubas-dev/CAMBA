@@ -55,6 +55,12 @@
                         <div class="mt-2 text-sm text-red-500">{{ $message }}</div>
                     @enderror
 
+                    <!-- Watermark Tip -->
+                    <p class="mt-2 text-sm text-purple-100">
+                        <i class="ri-shield-line mr-1"></i>
+                        Tip: Consider adding a watermark to your image to help discourage unauthorized use.
+                    </p>
+
                     <!-- Image Preview Button -->
                     <button type="button" id="viewNewImageButton"
                             class="mt-2 hidden w-full items-center justify-center rounded bg-purple-600 px-4 py-2 text-white hover:bg-purple-700"
