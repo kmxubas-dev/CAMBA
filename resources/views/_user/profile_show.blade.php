@@ -1,13 +1,28 @@
 <x-app-layout>
     <div class="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+        <!-- Success Message -->
+        @if(session('success'))
+            <div class="flex items-center rounded-lg border-2 border-purple-400 bg-purple-200 p-3 py-2">
+                <i class="ri-check-line text-2xl text-purple-600"></i>
+                <span class="ml-2 text-sm font-semibold text-fuchsia-600">{{ session('success') }}</span>
+            </div>
+        @endif
+
         <!-- Profile Header -->
-        <div class="rounded-xl bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 p-6 text-white shadow-lg">
-            <div class="flex items-center gap-4">
-                <img class="h-16 w-16 rounded-full border-4 border-white" src="{{ asset($user->profile_photo_path) }}" alt="{{ $user->name }}">
-                <div>
-                    <h1 class="text-2xl font-semibold">{{ $user->name }}</h1>
-                    <p class="text-sm">{{ $user->email }}</p>
+        <div class="mt-5 rounded-xl bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 p-6 text-white shadow-lg">
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <img class="h-16 w-16 rounded-full border-4 border-white" src="{{ asset($user->profile_photo_path) }}" alt="{{ $user->name }}">
+                    <div>
+                        <h1 class="text-2xl font-semibold">{{ $user->name }}</h1>
+                        <p class="text-sm">{{ $user->email }}</p>
+                    </div>
                 </div>
+                @if ($user->id === auth()->user()->id)
+                    <div class="flex items-center gap-4">
+                        <a href="{{ route('profile.show') }}" class="btn btn-white rounded-xl py-1 shadow-2xl">Edit</a>
+                    </div>
+                @endif
             </div>
         </div>
 

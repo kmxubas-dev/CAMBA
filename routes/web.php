@@ -18,6 +18,8 @@ Route::middleware([
     Route::get('profile', [AppController::class, 'profile'])->name('profile');
     Route::get('profile-show/{user}', [AppController::class, 'showProfile'])
         ->name('custom.profile.show');
+    Route::put('profile-update', [AppController::class, 'updateProfile'])
+        ->name('custom.profile.update');
 
     Route::resource('products', ProductController::class);
     Route::resource('auctions', ProductAuctionController::class);

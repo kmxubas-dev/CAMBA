@@ -129,7 +129,7 @@
                 <ul class="h-full overflow-auto rounded-xl bg-gradient-to-br from-purple-800 via-fuchsia-700 to-pink-600 p-3 shadow-xl">
 
                     <li class="group mb-1 text-white">
-                        <a href="{{ route('profile.show') }}" class="flex items-center rounded-md p-2 hover:bg-purple-950">
+                        <a href="{{ route('custom.profile.show', auth()->user()) }}" class="flex items-center rounded-md p-2 hover:bg-purple-950">
                             <div class="relative h-10 w-10 flex-shrink-0">
                                 <div class="rounded-full bg-white p-1 focus:outline-none focus:ring">
                                     <img class="h-8 w-8 rounded-full" src="{{ asset(auth()->user()->profile_photo_path) }}" alt=""/>
