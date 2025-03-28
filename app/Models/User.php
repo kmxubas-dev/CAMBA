@@ -104,10 +104,23 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(ProductBid::class, 'user_id');
     }
 
-    // ProductPurchase
+    // ProductPurchase - as a buyer
     public function purchases(): HasMany
     {
         return $this->hasMany(ProductPurchase::class, 'user_id');
+    }
+
+    // ProductPurchase - as a seller
+    public function sales(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            ProductPurchase::class,
+            Product::class,
+            'user_id',
+            'product_id',
+            'id',
+            'id'
+        );
     }
 
     /* ------------------------- Accessors/Mutators ------------------------- */
