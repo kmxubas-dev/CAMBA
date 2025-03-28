@@ -19,30 +19,23 @@ class ProductPurchaseFactory extends Factory
      */
     public function definition(): array
     {
-        $purchasable = $this->faker
-            ->randomElement([Product::class, ProductAuction::class])::factory()
-            ->create();
-
-        $product = $purchasable instanceof ProductAuction
-            ? $purchasable->product
-            : $purchasable;
-
         return [
             'user_id' => User::factory(),
-            'product_id' => $product->id,
-            'purchasable_type' => get_class($purchasable),
-            'purchasable_id' => $purchasable->id,
-            'amount' => $product->price,
-            'status' => $this->faker->randomElement(['pending', 'completed', 'cancelled']),
+            'product_id' => 1,
+            'purchasable_type' => 'App\Models\Product',
+            'purchasable_id' => 1,
+            'amount' => fake()->randomFloat(2, 300, 10000),
+            'status' => fake()->randomElement(['pending', 'completed', 'cancelled']),
             'purchase_info' => [
                 'code' => 'CMB-' . now()->format('Ymd') . '-' . 
-                        strtoupper($this->faker->unique()->bothify('##??##??')),
-                'product_snapshot' => $product->toArray(),
+                        strtoupper(fake()->unique()->bothify('##??##??')),
+                'product_snapshot' => Product::find(1)->toArray(),
             ],
             'payment_info' => [
-                'method' => $this->faker->randomElement(['paymongo', 'stripe', 'paypal']),
-                'status' => $this->faker->randomElement(['pending', 'successful', 'failed']),
-                'reference' => 'txn_' . $this->faker->unique()->regexify('[A-Za-z0-9]{12}'),
+                'method' => fake()->randomElement(['cod', 'gcash', 'grab_pay']),
+                'status' => fake()->randomElement(['pending', 'successful', 'failed']),
+                'reference' => 'txn_' . fake()->unique()->regexify('[A-Za-z0-9]{12}'),
+                'gateway' => fake()->randomElement(['paymongo', 'stripe', 'paypal']),
             ],
         ];
     }
@@ -59,7 +52,7 @@ class ProductPurchaseFactory extends Factory
             'amount' => $product->price,
             'purchase_info' => [
                 'code' => 'CMB-' . now()->format('Ymd') . '-' .
-                        strtoupper($this->faker->unique()->bothify('##??##??')),
+                        strtoupper(fake()->unique()->bothify('##??##??')),
                 'product_snapshot' => $product->toArray(),
             ],
         ]);
