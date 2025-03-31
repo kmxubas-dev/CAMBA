@@ -36,21 +36,77 @@ class AppController extends Controller
      */
     public function dashboard()
     {
-        $user = User::find(Auth::id());
-        $products_count = $user->products()->count();
-        $auctions_count = $user->products()->whereHas('auction')->count();
-        $bids_count = $user->bids()->count();
-        $purchases_count = $user->purchases()->count();
+        $user = Auth::user();
 
-        $products = Product::with('user')
-            ->where('user_id', '!=', Auth::id())
-            ->inRandomOrder()
-            ->limit(8)
-            ->get();
+        // --- Stat Cards ---
+        $products_count   = $user->products()->count();
+        $auctions_count   = $user->products()->whereHas('auction')->count();
+        $bids_count       = $user->bids()->count();
+        $purchases_count  = $user->purchases()->count();
 
-        return view('dashboard', compact(
-            'products_count', 'auctions_count', 'bids_count', 'purchases_count', 'products'
-        ));
+        // --- Monthly Sales ---
+        $monthlySales = $user->sales()
+            ->selectRaw('MONTH(product_purchases.created_at) as month, SUM(amount) as total')
+            ->whereYear('product_purchases.created_at', now()->year)
+            ->groupByRaw('MONTH(product_purchases.created_at)')
+            ->pluck('total', 'month')
+            ->all();
+
+        $monthly_sales_data = array_values(array_replace(array_fill(1, 12, 0), $monthlySales));
+
+        // --- Total Sales This Year ---
+        $totalSalesThisYear = $user->sales()
+            ->whereYear('product_purchases.created_at', now()->year)
+            ->sum('amount');
+
+        $totalSalesCountThisYear = $user->sales()
+            ->whereYear('product_purchases.created_at', now()->year)
+            ->count();
+
+        // --- Direct vs Auction Sales ---
+        $directSales = $user->sales()
+            ->where('purchasable_type', \App\Models\Product::class)
+            ->sum('amount');
+
+        $auctionSales = $user->sales()
+            ->where('purchasable_type', \App\Models\ProductAuction::class)
+            ->sum('amount');
+
+        $totalSales = $directSales + $auctionSales;
+
+        // --- Sold vs Unsold Artworks ---
+        $totalArtworks = $products_count;
+        $soldArtworkIds = $user->sales()->pluck('product_id')->unique();
+
+        $soldArtworks = $user->products()
+            ->whereIn('id', $soldArtworkIds)
+            ->count();
+
+        $unsoldArtworks = $totalArtworks - $soldArtworks;
+
+        $totalSalesCount = $user->sales()->count();
+
+        return view('dashboard', [
+            'stats' => [
+                'products_count' => $products_count,
+                'auctions_count' => $auctions_count,
+                'bids_count' => $bids_count,
+                'purchases_count' => $purchases_count,
+            ],
+            'sales' => [
+                'monthly' => $monthly_sales_data,
+                'direct' => $directSales,
+                'auction' => $auctionSales,
+                'total' => $totalSales,
+                'total_this_year' => $totalSalesThisYear,
+                'count_this_year' => $totalSalesCountThisYear,
+                'count_total' => $totalSalesCount,
+            ],
+            'artworks' => [
+                'sold' => $soldArtworks,
+                'unsold' => $unsoldArtworks,
+            ],
+        ]);        
     }
 
     /**
