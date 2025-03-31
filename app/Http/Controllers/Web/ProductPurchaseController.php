@@ -20,41 +20,26 @@ class ProductPurchaseController extends Controller
         $purchases = Auth::user()->purchases()->orderBy('created_at', 'desc')->paginate(10);
 
         return view('_user.purchases.index', compact('purchases'));
-
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create()
     {
-        $validated = $request->validate([
-            'type' => 'required|string|in:products,product_auctions',
-            'id' => 'required|integer|exists:' . $request->input('type') . ',id',
-        ]);
+        $products = Product::with('user', 'auction')->where('user_id', '!=', Auth::id())
+            ->inRandomOrder()
+            ->paginate(8);
 
-        $purchasable_type = $validated['type'];
-        $purchasable_id = $validated['id'];
-
-        if ($purchasable_type === 'products') {
-            $product = Product::findOrFail($purchasable_id);
-        } else {
-            $auction = ProductAuction::findOrFail($purchasable_id);
-            $product = $auction->product;
-        }
-
-        return view('_user.purchases.create', compact(
-            'product', 'purchasable_type', 'purchasable_id'
-        ));
+        return view('_user.purchases.create', compact('products'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, PayMongoService $payMongo)
+    public function store(Request $request)
     {
         $validated = $request->validate([
-            'payment_method' => 'required|string|in:gcash,grab_pay,maya,cod',
             'type' => 'required|string|in:products,product_auctions',
             'id' => 'required|integer|exists:' . $request->input('type') . ',id',
         ]);
@@ -66,6 +51,10 @@ class ProductPurchaseController extends Controller
         $product = $validated['type'] === 'products'
             ? $purchasable
             : $purchasable->product;
+
+        if ($product->qty < 1) {
+            return back()->with('error', 'Product is out of stock.');
+        }
 
         if ($validated['type'] === 'product_auctions') {
             $highestBid = $purchasable->bids->sortByDesc('amount')->first();
@@ -80,56 +69,29 @@ class ProductPurchaseController extends Controller
             }
         }
 
-        if ($product->qty < 1) {
-            return back()->with('error', 'Product is out of stock.');
-        }
-
         $amount = isset($highestBid) ? $highestBid->amount : $product->price;
 
-        if ($validated['payment_method'] === 'cod') {
-            $purchase = $this->handleStore($product, $purchasable, $amount, [
-                'method' => 'cod',
-                'status' => 'successful',
-                'source_id' => null,
-                'gateway' => null,
-            ], 'successful');
+        $purchase = new ProductPurchase();
+        $purchase->user_id = Auth::id();
+        $purchase->product_id = $product->id;
+        $purchase->amount = $amount;
+        $purchase->status = 'requested';
+        $purchase->purchase_info = [
+            'code' => 'CMB-'.now()->format('Ymd').'-'.strtoupper(substr(md5(microtime()), 0, 8)),
+            'product_snapshot' => $product->toArray(),
+        ];
+        $purchase->payment_info = [
+            'method' => null,
+            'status' => null,
+            'gateway' => null,
+            'reference' => null,
+        ];
+        $purchase->purchasable()->associate($purchasable);
+        $purchase->save();
 
-            $product->decrement('qty');
-
-            if (isset($purchasable->status) && $validated['type'] === 'product_auctions') {
-                $purchasable->update(['status' => 'sold']);
-            }
-
-            return redirect()
-                ->route('purchases.index')
-                ->with('success', 'Purchase successfully created!');
-        }
-
-        $source = $payMongo->createEwalletSource(
-            (int)round($amount * 100), // In centavos
-            $validated['payment_method'],
-            [
-                'success' => route('purchases.paymongo.success'),
-                'failed' => route('purchases.paymongo.failed'),
-            ]
-        );        
-
-        if (isset($source['errors'])) {
-            return back()->with('error', 'Payment could not be initialized.');
-        }
-
-        session([
-            'pending_purchase' => [
-                'product_id' => $product->id,
-                'purchasable_id' => $purchasable->id,
-                'purchasable_type' => $validated['type'],
-                'amount' => $amount,
-                'payment_method' => $validated['payment_method'],
-                'source_id' => $source['data']['id'],
-            ]
-        ]);
-
-        return redirect($source['data']['attributes']['redirect']['checkout_url']);
+        return redirect()
+            ->route('purchases.edit.payment', $purchase)
+            ->with('success', 'Purchase successfully created!');
     }
 
     /**
@@ -162,15 +124,18 @@ class ProductPurchaseController extends Controller
     public function update(Request $request, ProductPurchase $purchase)
     {
         $validated = $request->validate([
-            'status' => 'nullable|string|in:pending,successful,failed,received',
+            'status' => 'nullable|string|in:pending,successful',
             'payment_info.method' => 'nullable|string|in:gcash,grab_pay,maya,cod',
-            'payment_info.status' => 'nullable|string|in:pending,successful,failed',
-            'payment_info.reference_id' => 'nullable|string|max:255',
+            'payment_info.status' => 'nullable|string|in:pending,paid,failed',
+            'payment_info.gateway' => 'nullable|string|in:paymongo',
+            'payment_info.reference' => 'nullable|string|max:255',
         ]);
 
         $purchase->update($validated);
 
-        return back()->with('success', 'Purchase successfully updated!');
+        return redirect()
+            ->route('purchases.show', $purchase)
+            ->with('success', 'Purchase successfully updated!');
     }
 
     /**
@@ -180,12 +145,79 @@ class ProductPurchaseController extends Controller
     {
         $purchase->delete();
 
-        return back()->with('success', 'Purchase successfully deleted!');
+        return redirect()
+            ->route('purchases.index')
+            ->with('success', 'Purchase successfully deleted!');
     }
 
     // -------------------------------------------------------------------------------- //
 
-    public function paymongoSuccess(PayMongoService $payMongo)
+    public function paymentEdit(ProductPurchase $purchase)
+    {
+        $product = $purchase->product;
+
+        return view('_user.purchases.edit_payment', compact('purchase', 'product'));
+    }
+
+    public function paymentUpdate(Request $request, ProductPurchase $purchase)
+    {
+        $validated = $request->validate([
+            'payment_method' => 'required|string|in:gcash,grab_pay,maya,cod',
+        ]);
+
+        if ($validated['payment_method'] === 'cod') {
+            session([
+                'pending_purchase_payment' => [
+                    'purchase_id' => $purchase->id,
+                    'purchase_update' => [
+                        'status' => 'paid',
+                        'payment_info' => [
+                            'method' => 'cod',
+                            'status' => 'paid',
+                            'gateway' => null,
+                            'reference' => null,
+                        ],
+                    ],
+                ]
+            ]);
+
+            return redirect()->route('purchases.paymongo.success');
+        }
+
+        $paymongo = new PayMongoService;
+
+        $source = $paymongo->createEwalletSource(
+            (int)round($purchase->amount * 100), // In centavos
+            $validated['payment_method'],
+            [
+                'success' => route('purchases.paymongo.success'),
+                'failed' => route('purchases.paymongo.failed'),
+            ]
+        );
+
+        if (isset($source['errors'])) {
+            return back()->with('error', 'Payment could not be initialized.');
+        }
+
+        session([
+            'pending_purchase_payment' => [
+                'purchase_id' => $purchase->id,
+                'purchase_update' => [
+                    'status' => 'paid',
+                    'payment_info' => [
+                        'method' => $validated['payment_method'],
+                        'status' => 'paid',
+                        'gateway' => 'paymongo',
+                        'reference' => $source['data']['id'],
+                    ],
+                ],
+            ]
+        ]);
+
+        return redirect($source['data']['attributes']['redirect']['checkout_url']);
+    }
+
+    public function paymongoSuccess()
     {
         // REMINDER:
         // In production, NEVER assume payment success just from the success redirect.
@@ -196,7 +228,7 @@ class ProductPurchaseController extends Controller
         //
         // For now, we assume payment is successful in dev for testing.
 
-        $session = session('pending_purchase');
+        $session = session('pending_purchase_payment');
 
         if (!$session) {
             return redirect()
@@ -204,33 +236,25 @@ class ProductPurchaseController extends Controller
                 ->with('error', 'Session expired or invalid.');
         }
 
-        $product = Product::findOrFail($session['product_id']);
-        $purchasable = $session['purchasable_type'] === 'products'
-            ? Product::findOrFail($session['purchasable_id'])
-            : ProductAuction::findOrFail($session['purchasable_id']);
+        $purchase = ProductPurchase::findOrFail($session['purchase_id']);
+        $purchase->update($session['purchase_update']);
+        $purchase->product->decrement('qty');
 
-
-        $purchase = $this->handleStore($product, $purchasable, $session['amount'], [
-            'method' => $session['payment_method'],
-            'status' => 'successful',
-            'source_id' => $session['source_id'],
-            'gateway' => 'paymongo',
-        ], 'successful');
-
-        $product->decrement('qty');
-
-        if ($session['purchasable_type'] === 'product_auctions') {
+        $purchasable = $purchase->purchasable;
+        if ($purchasable instanceof \App\Models\ProductAuction) {
             $purchasable->update(['status' => 'sold']);
         }
 
-        session()->forget('pending_purchase');
+        session()->forget('pending_purchase_payment');
 
-        return redirect()->route('purchases.index')->with('success', 'Payment successful!');
+        return redirect()
+            ->route('purchases.edit', $purchase->id)
+            ->with('success', 'Payment successful!');
     }
 
     public function paymongoFailed()
     {
-        session()->forget('pending_purchase');
+        session()->forget('pending_purchase_payment');
 
         return redirect()
             ->route('purchases.index')
@@ -238,22 +262,4 @@ class ProductPurchaseController extends Controller
     }
 
     // -------------------------------------------------------------------------------- //
-    
-    protected function handleStore($product, $purchasable, $amount, $payment, $status)
-    {
-        $purchase = new ProductPurchase();
-        $purchase->user_id = Auth::id();
-        $purchase->product_id = $product->id;
-        $purchase->amount = $amount;
-        $purchase->status = $status;
-        $purchase->purchase_info = [
-            'code' => 'CMB-'.now()->format('Ymd').'-'.strtoupper(substr(md5(microtime()), 0, 8)),
-            'product_snapshot' => $product->toArray(),
-        ];
-        $purchase->payment_info = $payment;
-        $purchase->purchasable()->associate($purchasable);
-        $purchase->save();
-
-        return $purchase;
-    }
 }

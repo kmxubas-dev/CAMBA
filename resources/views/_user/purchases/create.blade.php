@@ -1,9 +1,9 @@
 <x-app-layout>
+    <!-- Breadcrumb -->
     @include('partials.app_breadcrumbs', [
         'breadcrumbs' => [
-            ['label' => 'Artworks', 'url' => route('products.index')],
-            ['label' => $product->name, 'url' => route('products.show', $product)],
-            ['label' => 'Purchase']
+            ['label' => 'Purchases', 'url' => route('purchases.index')],
+            ['label' => 'Create']
         ]
     ])
 
@@ -11,12 +11,12 @@
     <section class="container mx-auto flex w-full flex-col justify-center gap-4 py-5">
         <!-- Header -->
         <div class="mx-1 flex items-center justify-between">
-            <h3 class="text-2xl">Purchase Artwork</h3>
+            <h3 class="text-2xl">Artworks to purchase</h3>
 
-            <a href="{{ route('products.show', $product->id) }}"
+            <a href="{{ route('purchases.index') }}"
                class="btn btn-purple w-auto rounded-xl px-3 py-1.5 shadow-lg">
                 <i class="ri-arrow-left-line text-xl"></i>
-                <span>Back</span>
+                <span>All Purchases</span>
             </a>
         </div>
 
@@ -28,105 +28,63 @@
             </div>
         @endif
 
-        <!-- Error Message -->
-        @if(session('error'))
-            <div class="flex items-center rounded-lg border-2 border-fuchsia-400 bg-fuchsia-100 p-3 py-2">
-                <i class="ri-error-warning-line text-2xl text-fuchsia-600"></i>
-                <span class="ml-2 text-sm font-semibold text-fuchsia-700">{{ session('error') }}</span>
-            </div>
-        @endif
-
-        <div
-            class="mx-auto w-full max-w-xl rounded-xl bg-gradient-to-br from-purple-500 via-pink-400 to-yellow-300 p-6 shadow-lg">
-            <div class="mb-3 rounded-lg p-1 text-center">
-                <h2 class="text-xl font-bold text-white">Confirm Purchase</h2>
-            </div>
-
-            <div
-                class="mb-3 flex items-center gap-4 rounded-lg bg-white bg-opacity-50 p-4 shadow-lg backdrop-blur-md">
-                <img src="{{ asset($product->images) }}" alt="{{ $product->name }}"
-                     class="h-20 w-20 rounded-lg object-cover shadow-lg ring-2 ring-purple-400"/>
-                <div class="text-sm text-gray-800">
-                    <h3 class="text-lg font-semibold text-purple-950">{{ $product->name }}</h3>
-                    <p><i class="ri-expand-diagonal-line mr-2 text-pink-600"></i>{{ $product->attributes['size'] }}</p>
-                    <p><i class="ri-calendar-line mr-2 text-pink-600"></i>{{ $product->attributes['year'] }}</p>
-                    <p><i class="ri-palette-line mr-2 text-pink-600"></i>{{ $product->attributes['type'] }}</p>
+        <!-- Artwork Cards Grid -->
+        <div class="grid w-full gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            @foreach ($products as $product)
+                <div class="relative flex flex-col overflow-hidden rounded-xl bg-gradient-to-tl from-purple-700 via-purple-900 to-indigo-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-yellow-500/30 hover:ring-2 hover:ring-yellow-400">
                     
-                    <!-- Display purchase source -->
-                    <p class="text-sm text-gray-600">
-                        @if($purchasable_type === 'products')
-                            <span class="font-semibold text-purple-800">
-                                <i class="ri-store-line mr-2 text-pink-600"></i>Source: Direct Purchase
-                            </span>
-                        @elseif($purchasable_type === 'product_auctions')
-                            <span class="font-semibold text-purple-800">
-                                <i class="ri-auction-line mr-2 text-pink-600"></i>Source: Auction
-                            </span>
+                    <!-- Clickable Overlay -->
+                    <a href="{{ route('products.show', $product) }}" class="absolute inset-0 z-20">&nbsp;</a>
+
+                    <!-- Artwork Image -->
+                    <div class="relative h-32 w-full overflow-hidden sm:h-40 md:h-48 lg:h-56">
+                        <img src="{{ asset($product->images) }}" alt="{{ $product->name }}" class="h-full w-full object-cover transition-transform duration-500 hover:scale-105">
+
+                        <!-- Auctioned Badge (Visible only if the product has an auction) -->
+                        @if ($product->auction) 
+                            <div class="absolute left-2 top-2 z-20 flex items-center gap-1 rounded-full bg-yellow-500 px-3 py-1 text-xs font-semibold text-gray-800 shadow-md">
+                                <i class="ri-gavel-line text-sm"></i> Auctioned
+                            </div>
                         @endif
-                    </p>
-                </div>
-            </div>
-
-            <div
-                class="mb-4 rounded-md bg-white bg-opacity-80 px-6 py-3 text-center shadow-lg ring-1 ring-purple-300 backdrop-blur-md">
-                <p class="text-sm text-gray-600">Total</p>
-                @php
-                    $total = $purchasable_type === 'product_auctions'
-                        ? ($product->bids->max('amount') ?? 0)
-                        : $product->price;
-                @endphp
-
-                <p class="text-2xl font-semibold text-pink-600">₱{{ number_format($total, 2) }}</p>
-            </div>
-
-            {{-- Purchase Form --}}
-            <form method="POST" action="{{ route('purchases.store') }}" class="space-y-6">
-                @csrf
-            
-                <input type="hidden" name="type" value="{{ $purchasable_type }}">
-                <input type="hidden" name="id" value="{{ $purchasable_id }}">
-            
-                <!-- Payment Methods -->
-                <div class="rounded-md">
-                    <h4 class="mb-3 text-center text-lg font-semibold text-white">Choose Payment Method</h4>
-                    <div class="grid grid-cols-3 gap-4">
-                        @php
-                            $methods = [
-                                'gcash' => 'GCash',
-                                'grab_pay' => 'GrabPay',
-                                // 'maya' => 'Maya',
-                                'cod' => 'Cash on Delivery',
-                            ];
-                        @endphp
-
-                        @foreach ($methods as $value => $label)
-                            <label
-                                class="group relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-transparent bg-white bg-opacity-80 px-4 py-6 text-center text-sm font-medium text-purple-800 shadow-lg backdrop-blur-md transition-all duration-300 hover:border-purple-600 hover:bg-purple-50 hover:ring-2 hover:ring-purple-300 peer-checked:border-purple-600 peer-checked:ring-2 peer-checked:ring-purple-400">
-                                <input type="radio" name="payment_method" value="{{ $value }}"
-                                       class="peer hidden" required>
-                                <div class="flex flex-col items-center gap-2 peer-checked:font-semibold peer-checked:text-purple-700">
-                                    <i class="ri-wallet-line text-xl peer-checked:text-purple-700"></i>
-                                    {{ $label }}
-                                </div>
-                                <div
-                                    class="pointer-events-none absolute inset-0 rounded-lg border-2 border-transparent transition-all peer-checked:border-purple-700 peer-checked:ring-2 peer-checked:ring-purple-400"></div>
-                            </label>
-                        @endforeach
                     </div>
-            
-                    @error('payment_method')
-                        <p class="mt-2 text-center text-xs text-red-600">{{ $message }}</p>
-                    @enderror
+
+                    <!-- Artwork Details -->
+                    <div class="z-10 p-3 text-white">
+                        <!-- Product Title -->
+                        <h3 class="truncate text-sm font-semibold text-yellow-400">
+                            {{ $product->name }}
+                        </h3>
+                        <div class="text-xs text-gray-300">
+                            by: <span class="text-yellow-200">{{ $product->user->name }}</span>
+                        </div>
+
+                        <!-- Compact Product Info -->
+                        <div class="mt-1 text-xs text-gray-300">
+                            <p>{{ $product->attributes['year'] }} • {{ $product->attributes['type'] }}</p>
+                            <p>{{ $product->attributes['size'] }}</p>
+                        </div>
+
+                        <!-- Price and Auction Info -->
+                        <div class="mt-3 flex items-center justify-between text-sm">
+                            <p class="font-semibold text-yellow-400">
+                                ₱{{ number_format($product->price, 2) }}
+                            </p>
+
+                            @if ($product->auction)
+                                <div class="flex items-center gap-1 text-xs text-yellow-300">
+                                    <i class="ri-auction-line text-sm"></i>
+                                    {{ $product->auction->bids()->count() }} bids
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
-            
-                <div class="flex justify-center">
-                    <button type="submit"
-                            class="btn btn-pink-to-purple rounded-full font-bold shadow-lg"
-                            onclick="return confirm('Are you sure you want to submit the purchase?');">
-                        <i class="ri-check-line mr-2 text-base"></i> Confirm Purchase
-                    </button>
-                </div>
-            </form>
+            @endforeach
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-5">
+            {{ $products->links() }}
         </div>
     </section>
 </x-app-layout>

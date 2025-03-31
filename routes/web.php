@@ -34,6 +34,13 @@ Route::middleware([
     Route::post('auctions/{auction}/bid', [ProductBidController::class, 'storeOrUpdate'])
         ->name('auctions.bid');
 
+    Route::prefix('purchases')->name('purchases.')->group(function () {
+        Route::get('{purchase}/edit-payment', [ProductPurchaseController::class, 'paymentEdit'])
+            ->name('edit.payment');
+        Route::put('{purchase}/edit-payment', [ProductPurchaseController::class, 'paymentUpdate'])
+            ->name('update.payment');
+    });
+
     Route::prefix('purchases/paymongo')->name('purchases.paymongo.')->group(function () {
         Route::get('/success', [ProductPurchaseController::class, 'paymongoSuccess'])
             ->name('success');

@@ -85,7 +85,12 @@
 
                             <!-- View Details Button -->
                             <div class="ml-4">
-                                <a href="{{ route('purchases.show', $purchase->id) }}" class="btn btn-purple rounded-md px-3 py-1 text-xs font-semibold">
+                                <a href="{{ $purchase->status === 'successful' 
+                                            ? route('purchases.show', $purchase->id) 
+                                            : ($purchase->status === 'paid' 
+                                                ? route('purchases.edit', $purchase->id) 
+                                                : route('purchases.edit.payment', $purchase->id)) }}" 
+                                class="btn btn-purple rounded-md px-3 py-1 text-xs font-semibold">
                                     <i class="ri-eye-line"></i> View Details
                                 </a>
                             </div>

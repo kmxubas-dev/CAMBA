@@ -155,10 +155,17 @@
                     @if(auth()->id() !== $product->user_id)
                         <div class="flex flex-col items-center gap-2 sm:flex-row sm:justify-start">
                             @if ($product->qty > 0 && !$product->auction)
-                                <a href="{{ route('purchases.create', ['type' => 'products', 'id' => $product->id]) }}"
-                                class="btn btn-purple-to-pink rounded-full shadow-lg">
-                                    <i class="ri-shopping-cart-line"></i> Buy Now
-                                </a>
+                                <form action="{{ route('purchases.store') }}" method="POST" class="inline">
+                                    @csrf
+                                    <input type="hidden" name="type" value="products">
+                                    <input type="hidden" name="id" value="{{ $product->id }}">
+                                
+                                    <button type="submit" 
+                                            class="btn btn-purple-to-pink rounded-full shadow-lg"
+                                            onclick="return confirm('Are you sure you want to purchase this artwork?');">
+                                        <i class="ri-shopping-cart-line"></i> Buy Now
+                                    </button>
+                                </form>
                             @endif
 
                             @if ($product->auction)

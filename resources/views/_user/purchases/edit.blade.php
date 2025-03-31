@@ -2,14 +2,14 @@
     @include('partials.app_breadcrumbs', [
         'breadcrumbs' => [
             ['label' => 'My Purchases', 'url' => route('purchases.index')],
-            ['label' => 'Edit Purchase Status'],
+            ['label' => 'Edit Purchase'],
         ]
     ])
 
     <section class="container mx-auto flex w-full flex-col justify-center gap-4 py-5">
         <!-- Header -->
         <div class="mx-1 flex items-center justify-between">
-            <h3 class="text-2xl">Edit Purchase Status</h3>
+            <h3 class="text-2xl">Edit Purchase</h3>
 
             <a href="{{ route('purchases.show', $purchase->id) }}"
                 class="btn btn-purple w-auto rounded-xl px-3 py-1.5 shadow-lg">
@@ -26,24 +26,30 @@
             </div>
         @endif
 
-        <!-- Edit Container -->
+        <!-- Receipt Container -->
         <div class="mx-auto w-full max-w-xl rounded-xl bg-white p-6 shadow-lg ring-2 ring-purple-300">
-            
             <!-- Header Section -->
             <div class="mb-4 text-center">
-                <h2 class="text-2xl font-semibold text-purple-950">Editing Purchase #{{ $purchase->purchase_info['code'] }}</h2>
+                <h2 class="text-2xl font-semibold text-purple-950">{{ $purchase->product->name }}</h2>
+                <p class="text-sm text-gray-500">Receipt #{{ $purchase->purchase_info['code'] }}</p>
             </div>
 
             <!-- Product Information Section -->
             <div class="mb-6 flex items-center gap-4 border-b-2 border-purple-300 pb-4">
                 <img src="{{ asset($purchase->product->images) }}" 
                      alt="{{ $purchase->product->name }}" 
-                     class="h-20 w-20 rounded-lg object-cover shadow-md ring-2 ring-purple-400" />
+                     class="h-24 w-24 rounded-lg object-cover shadow-md ring-2 ring-purple-400" />
                 <div class="text-left">
-                    <p class="text-lg font-semibold text-purple-950">{{ $purchase->product->name }}</p>
-                    <p><i class="ri-expand-diagonal-line mr-2 text-pink-600"></i>{{ $purchase->product->attributes['size'] ?? '-' }}</p>
-                    <p><i class="ri-calendar-line mr-2 text-pink-600"></i>{{ $purchase->product->attributes['year'] ?? '-' }}</p>
-                    <p><i class="ri-palette-line mr-2 text-pink-600"></i>{{ $purchase->product->attributes['type'] ?? '-' }}</p>
+                    <p>
+                        <i class="ri-user-line mr-2 text-pink-600"></i>
+                        <a href="{{ route('custom.profile.show', $purchase->product->user->id) }}" 
+                            class="font-medium text-purple-700 transition duration-150 ease-in-out hover:text-purple-900 hover:underline">
+                            {{ $purchase->product->user->name }}
+                        </a>
+                    </p>
+                    <p><i class="ri-expand-diagonal-line mr-2 text-pink-600"></i> {{ $purchase->product->attributes['size'] ?? '-' }}</p>
+                    <p><i class="ri-calendar-line mr-2 text-pink-600"></i> {{ $purchase->product->attributes['year'] ?? '-' }}</p>
+                    <p><i class="ri-palette-line mr-2 text-pink-600"></i> {{ $purchase->product->attributes['type'] ?? '-' }}</p>
                 </div>
             </div>
 
@@ -88,7 +94,7 @@
             </div>
 
             <!-- Date of Purchase -->
-            <div class="mb-6 text-center text-sm text-gray-600">
+            <div class="text-center text-sm text-gray-600">
                 <p><span class="font-semibold text-purple-900">Purchase Date:</span> {{ $purchase->created_at->format('F j, Y - g:i A') }}</p>
             </div>
 
@@ -98,11 +104,11 @@
                 @method('PUT')
 
                 <!-- Status Dropdown -->
-                <div class="mb-6">
-                    <label for="status" class="block text-sm font-semibold text-purple-950">Update Purchase Status</label>
+                <div>
+                    <label for="status" class="mb-1 block text-sm font-semibold text-purple-950">Update Purchase Status</label>
                     <select id="status" name="status" class="w-full rounded-lg border-2 border-purple-300 px-4 py-2 text-sm text-purple-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-300" required>
-                        <option value="received" {{ $purchase->status === 'received' ? 'selected' : '' }}>Received</option>
-                        <option value="cancelled" {{ $purchase->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                        <option value="" disabled {{ $purchase->status !== 'successful' ? 'selected' : '' }}>Select status</option>
+                        <option value="successful" {{ $purchase->status === 'successful' ? 'selected' : '' }}>Received</option>
                     </select>
 
                     @error('status')

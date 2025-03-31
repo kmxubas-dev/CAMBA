@@ -305,11 +305,18 @@
                     
                         @if($auction->status === 'ended' && $isUserHighestBidder)
                             <!-- Buy Now Button -->
-                            <div class="mt-6 text-center">
-                                <a href="{{ route('purchases.create', ['type' => 'product_auctions', 'id' => $auction->id]) }}"
-                                    class="btn btn-purple-to-pink inline-flex rounded-lg shadow-lg">
-                                    <i class="ri-shopping-cart-2-line"></i> Buy Now
-                                </a>
+                            <div class="mt-6 flex justify-center">
+                                <form action="{{ route('purchases.store') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="type" value="product_auctions">
+                                    <input type="hidden" name="id" value="{{ $auction->id }}">
+                            
+                                    <button type="submit"
+                                            class="btn btn-purple-to-pink rounded-full shadow-lg"
+                                            onclick="return confirm('Are you sure you want to purchase this artwork?');">
+                                        <i class="ri-shopping-cart-line"></i> Buy Now
+                                    </button>
+                                </form>
                             </div>
                         @endif
                     @endif
