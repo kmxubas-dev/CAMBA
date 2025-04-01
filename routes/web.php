@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\ProductAuctionController;
 use App\Http\Controllers\Web\ProductBidController;
 use App\Http\Controllers\Web\ProductController;
 use App\Http\Controllers\Web\ProductPurchaseController;
+use App\Http\Controllers\Web\SaleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AppController::class, 'welcome'])->middleware('guest');
@@ -25,6 +26,7 @@ Route::middleware([
     Route::resource('auctions', ProductAuctionController::class);
     Route::resource('bids', ProductBidController::class);
     Route::resource('purchases', ProductPurchaseController::class);
+    Route::resource('sales', SaleController::class);
 
     Route::get('products-buyer', [ProductController::class, 'index_buyer'])
         ->name('products.index.buyer');
