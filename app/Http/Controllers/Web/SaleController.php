@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\ProductPurchase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SaleController extends Controller
 {
@@ -13,7 +14,9 @@ class SaleController extends Controller
      */
     public function index()
     {
-        //
+        $purchases = Auth::user()->sales()->orderBy('created_at', 'desc')->paginate(10);
+
+        return view('_user.sales.index', compact('purchases'));
     }
 
     /**
@@ -21,7 +24,7 @@ class SaleController extends Controller
      */
     public function create()
     {
-        //
+        return view('_user.sales.create');
     }
 
     /**
@@ -37,7 +40,14 @@ class SaleController extends Controller
      */
     public function show(ProductPurchase $sale)
     {
-        //
+        if ($sale->product->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $sale->load('product');
+        $purchase = $sale;
+
+        return view('_user.sales.show', compact('purchase'));
     }
 
     /**
@@ -45,7 +55,10 @@ class SaleController extends Controller
      */
     public function edit(ProductPurchase $sale)
     {
-        //
+        $sale->load(['product', 'purchasable']);
+        $purchase = $sale;
+
+        return view('_user.sales.edit', compact('purchase'));
     }
 
     /**
@@ -53,7 +66,15 @@ class SaleController extends Controller
      */
     public function update(Request $request, ProductPurchase $sale)
     {
-        //
+        $validated = $request->validate([
+            'status' => 'nullable|string|in:pending',
+        ]);
+
+        $sale->update($validated);
+
+        return redirect()
+            ->route('sales.show', $sale)
+            ->with('success', 'Sale successfully updated!');
     }
 
     /**

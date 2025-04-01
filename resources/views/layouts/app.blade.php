@@ -171,6 +171,12 @@
                                     My Auctions
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('sales.index') }}" class="flex items-center text-sm transition hover:text-white">
+                                    <i class="ri-store-2-fill mr-2 text-sm text-purple-400"></i>
+                                    My Sales
+                                </a>
+                            </li>                            
                         </ul>
                     </li>
 
