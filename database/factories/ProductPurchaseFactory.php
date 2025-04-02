@@ -25,7 +25,7 @@ class ProductPurchaseFactory extends Factory
             'purchasable_type' => 'App\Models\Product',
             'purchasable_id' => 1,
             'amount' => fake()->randomFloat(2, 300, 10000),
-            'status' => fake()->randomElement(['pending', 'completed', 'cancelled']),
+            'status' => fake()->randomElement(['requested', 'pending', 'paid', 'successful']),
             'purchase_info' => [
                 'code' => 'CMB-' . now()->format('Ymd') . '-' . 
                         strtoupper(fake()->unique()->bothify('##??##??')),
@@ -33,7 +33,7 @@ class ProductPurchaseFactory extends Factory
             ],
             'payment_info' => [
                 'method' => fake()->randomElement(['cod', 'gcash', 'grab_pay']),
-                'status' => fake()->randomElement(['pending', 'successful', 'failed']),
+                'status' => fake()->randomElement(['pending', 'paid', 'failed']),
                 'reference' => 'txn_' . fake()->unique()->regexify('[A-Za-z0-9]{12}'),
                 'gateway' => fake()->randomElement(['paymongo', 'stripe', 'paypal']),
             ],
