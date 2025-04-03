@@ -7,6 +7,7 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
         <title>{{ config('app.name', 'Laravel') }} @yield('title')</title> <!-- Default -->
+        <link rel="icon" href="{{ asset('assets/img/logo.png') }}" type="image/x-icon" />
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net"> <!-- Default -->
