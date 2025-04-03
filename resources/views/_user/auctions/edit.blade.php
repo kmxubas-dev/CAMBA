@@ -10,13 +10,13 @@
     <!-- Main Section -->
     <section class="container mx-auto flex w-full flex-col justify-center gap-4 py-5">
         <!-- Header -->
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div class="mx-1 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <h3 class="text-xl sm:text-2xl">
                 Edit Auction for: 
                 <span class="font-semibold text-purple-700">{{ $auction->product->name }}</span>
             </h3>
 
-            <a href="{{ route('auctions.index') }}" class="btn btn-purple rounded-xl px-3">
+            <a href="{{ route('auctions.index') }}" class="btn btn-purple rounded-xl px-3 py-1.5 shadow-lg">
                 <i class="ri-arrow-left-line text-xl"></i>
                 <span>My Auctions</span>
             </a>

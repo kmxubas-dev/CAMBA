@@ -38,198 +38,119 @@
 
         <!-- Main Auction Card -->
         <div class="relative flex flex-col gap-6 rounded-xl bg-gradient-to-tl from-purple-400 to-pink-400 p-6 shadow-lg">
-            <!-- Top Section: Image + Action Buttons -->
-            <div class="grid w-full grid-cols-1 gap-6 lg:grid-cols-3">
-                <!-- Action Buttons (Left Side) -->
-                <div class="flex w-full flex-col justify-center gap-4 p-0 lg:px-10">
-                    <!-- My Auctions (Moved to the top) -->
-                    <a href="{{ route('auctions.index') }}"
-                    class="flex h-16 w-full items-center justify-center gap-2 rounded-lg bg-white text-sm font-semibold text-purple-700 shadow-md transition hover:bg-purple-100">
-                        <i class="ri-auction-line text-lg"></i>
-                        <span>My Auctions</span>
-                    </a>
-
-                    <!-- Edit Auction (Moved to the left side) -->
-                    <a href="{{ route('auctions.edit', $auction->id) }}"
-                    class="flex h-16 w-full items-center justify-center gap-2 rounded-lg bg-white text-sm font-semibold text-purple-700 shadow-md transition hover:bg-purple-100">
-                        <i class="ri-edit-line text-lg"></i>
-                        <span>Edit Auction</span>
-                    </a>
-
-                    <!-- View Artwork -->
-                    <a href="{{ route('products.show', $auction->product->id) }}"
-                    class="flex h-16 w-full items-center justify-center gap-2 rounded-lg bg-white text-sm font-semibold text-purple-700 shadow-md transition hover:bg-purple-100">
-                        <i class="ri-image-line text-lg"></i>
-                        <span>View Artwork</span>
-                    </a>
-                </div>
-
-                <!-- Product Image (Center) -->
-                <div class="relative w-full md:col-span-1">
-                    <div class="relative w-full overflow-hidden rounded-2xl border-4 border-purple-200 bg-white shadow-xl transition-all duration-300 ease-in-out hover:scale-[1.01] hover:shadow-2xl">
+            <!-- Two-column Layout -->
+            <div class="flex flex-col gap-6 lg:flex-row">
+                <!-- Auction Info (Left Column) -->
+                <div class="w-full rounded-xl bg-white bg-opacity-50 p-3 shadow-md backdrop-blur-md sm:p-4 lg:w-1/2">
+                    <!-- Product Image -->
+                    <div class="relative mb-3 w-full cursor-pointer overflow-hidden rounded-2xl border-4 border-purple-200 bg-white shadow-md transition-all duration-300 ease-in-out hover:scale-[1.01] hover:shadow-lg">
                         <img src="{{ asset($auction->product->images) }}"
                             alt="{{ $auction->product->name }}"
-                            class="h-72 w-full max-w-full cursor-pointer object-cover transition-transform duration-300 ease-in-out hover:scale-105 sm:h-[333px] lg:h-[400px]"
+                            class="h-64 w-full object-cover transition-transform duration-300 ease-in-out hover:scale-105 sm:h-[280px] lg:h-[320px]"
                             onclick="openModal('{{ asset($auction->product->images) }}')"
                             loading="lazy" />
                     </div>
-                </div>
 
-                <!-- Action Buttons (Right Side) -->
-                <div class="flex w-full flex-col justify-center gap-4 p-0 lg:px-10">
-                    <!-- Pause or Resume Button -->
-                    <form action="{{ route('auctions.update', $auction->id) }}" method="POST"
-                          onsubmit="{{ in_array($auction->status, ['ended', 'sold']) ? 'return false;' : 'return confirm(\'Are you sure you want to ' . ($auction->status === 'paused' ? 'resume' : 'pause') . ' this auction?\');' }}">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="status" value="{{ $auction->status === 'paused' ? 'active' : 'paused' }}">
-                
-                        <button type="submit"
-                                class="flex h-16 w-full items-center justify-center gap-2 rounded-lg bg-white text-sm font-semibold text-blue-600 shadow-md transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-50"
-                                {{ in_array($auction->status, ['ended', 'sold']) ? 'disabled' : '' }}>
-                            <i class="ri-{{ $auction->status === 'paused' ? 'play' : 'pause' }}-line text-lg"></i>
-                            <span>{{ $auction->status === 'paused' ? 'Resume' : 'Pause' }} Auction</span>
-                        </button>
-                    </form>
-                
-                    <!-- Finish Button (disabled when ended or sold) -->
-                    <form action="{{ route('auctions.update', $auction->id) }}" method="POST"
-                        onsubmit="{{ in_array($auction->status, ['ended', 'sold']) ? 'return false;' : 'return confirm(\'Are you sure you want to finish this auction?\');' }}">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="status" value="ended">
-                        <input type="hidden" name="end" value="{{ now()->setSeconds(0) }}">
-                    
-                        <button type="submit"
-                                class="flex h-16 w-full items-center justify-center gap-2 rounded-lg bg-white text-sm font-semibold text-green-600 shadow-md transition hover:bg-green-100 disabled:cursor-not-allowed disabled:opacity-50"
-                                {{ in_array($auction->status, ['ended', 'sold']) ? 'disabled' : '' }}>
-                            <i class="ri-check-line text-lg"></i>
-                            <span>Finish Auction</span>
-                        </button>
-                    </form>                  
-                
-                    <!-- Stop Button -->
-                    <form action="{{ route('auctions.destroy', $auction) }}" method="POST"
-                        onsubmit="return {{ $auction->status === 'sold' ? 'false' : 'confirm(\'Are you sure you want to delete this auction?\')' }};">
-                        @csrf
-                        @method('DELETE')
-
-                        <button type="submit"
-                                class="flex h-16 w-full items-center justify-center gap-2 rounded-lg bg-white text-sm font-semibold text-red-600 shadow-md transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
-                                {{ $auction->status === 'sold' ? 'disabled' : '' }}>
-                            <i class="ri-delete-bin-line text-lg"></i>
-                            <span>Stop Auction</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Content Below Image: Two-column Layout -->
-            <div class="flex flex-col gap-6 lg:flex-row">
-                <!-- Auction Info (Left Column) -->
-                <div class="w-full rounded-xl bg-white bg-opacity-50 p-4 shadow-lg backdrop-blur-md sm:p-6 lg:w-1/2">
                     <!-- Product Name -->
-                    <div class="mb-3">
-                        <h2 class="w-full rounded-xl bg-blue-50 px-4 py-2 text-2xl font-extrabold tracking-tight text-purple-900 shadow-inner backdrop-blur-md sm:text-3xl">
+                    <div class="mb-2">
+                        <h2 class="w-full rounded-xl bg-blue-50 px-3 py-1.5 text-xl font-bold tracking-tight text-purple-900 shadow-inner backdrop-blur-md sm:text-2xl">
                             <span class="bg-gradient-to-r from-purple-600 via-purple-500 to-purple-400 bg-clip-text text-transparent">
                                 {{ $auction->product->name }}
                             </span>
                         </h2>
-                    </div>    
+                    </div>
 
-                    <!-- Auction Info Section with Countdown in Grid -->
-                    <div class="mb-6">
-                        <h4 class="mb-3 flex items-center gap-2 border-b pb-1 text-base font-semibold text-purple-800">
+                    <!-- Auction Info Section with Countdown -->
+                    <div class="mb-4">
+                        <h4 class="mb-2 flex items-center gap-2 border-b pb-1 text-sm font-semibold text-purple-800">
                             <i class="ri-information-line text-lg text-purple-600"></i>
                             Auction Details
                         </h4>
-                        <div class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+                        <div class="grid grid-cols-2 gap-2 text-xs sm:grid-cols-3">
                             <!-- Status -->
-                            <div class="flex flex-col items-center rounded-lg bg-white/90 px-4 py-2 text-center shadow-md">
-                                <i class="ri-auction-line mb-1 text-xl text-indigo-400"></i>
-                                <p class="text-xs font-medium text-purple-600">Status</p>
+                            <div class="flex flex-col items-center rounded bg-white/90 px-3 py-1.5 text-center shadow">
+                                <i class="ri-auction-line mb-0.5 text-lg text-indigo-400"></i>
+                                <p class="font-medium text-purple-600">Status</p>
                                 <p class="text-sm font-bold text-purple-800">{{ ucfirst($auction->status) }}</p>
                             </div>
 
                             <!-- Start Price -->
-                            <div class="flex flex-col items-center rounded-lg bg-white/90 px-4 py-2 text-center shadow-md">
-                                <i class="ri-price-tag-3-line mb-1 text-xl text-indigo-400"></i>
-                                <p class="text-xs font-medium text-purple-600">Start Price</p>
+                            <div class="flex flex-col items-center rounded bg-white/90 px-3 py-1.5 text-center shadow">
+                                <i class="ri-price-tag-3-line mb-0.5 text-lg text-indigo-400"></i>
+                                <p class="font-medium text-purple-600">Start Price</p>
                                 <p class="text-sm font-bold text-purple-800">₱{{ number_format($auction->price, 2) }}</p>
                             </div>
 
                             <!-- Winning Bid -->
-                            <div class="flex flex-col items-center rounded-lg bg-white/90 px-4 py-2 text-center shadow-md">
-                                <i class="ri-currency-line mb-1 text-xl text-indigo-400"></i>
-                                <p class="text-xs font-medium text-purple-600">Winning Bid</p>
+                            <div class="flex flex-col items-center rounded bg-white/90 px-3 py-1.5 text-center shadow">
+                                <i class="ri-currency-line mb-0.5 text-lg text-indigo-400"></i>
+                                <p class="font-medium text-purple-600">Winning Bid</p>
                                 <p class="text-sm font-bold text-purple-800">
                                     ₱{{ number_format($auction->bids->max('amount') ?? $auction->price, 2) }}
                                 </p>
                             </div>
 
                             <!-- Start Date -->
-                            <div class="flex flex-col items-center rounded-lg bg-white/90 px-4 py-2 text-center shadow-md">
-                                <i class="ri-calendar-line mb-1 text-xl text-indigo-400"></i>
-                                <p class="text-xs font-medium text-purple-600">Start Date</p>
-                                <div>
-                                    <p class="text-sm font-bold text-purple-800">{{ $auction->start->format('M d, Y') }}</p>
-                                    <p class="text-sm font-bold text-purple-800">{{ $auction->start->format('h:i A') }}</p>
-                                </div>
+                            <div class="flex flex-col items-center rounded bg-white/90 px-3 py-1.5 text-center shadow">
+                                <i class="ri-calendar-line mb-0.5 text-lg text-indigo-400"></i>
+                                <p class="font-medium text-purple-600">Start Date</p>
+                                <p class="text-sm font-bold text-purple-800">{{ $auction->start->format('M d, Y') }}</p>
+                                <p class="text-sm font-bold text-purple-800">{{ $auction->start->format('h:i A') }}</p>
                             </div>
 
                             <!-- Countdown Timer -->
-                            <div class="flex flex-col items-center rounded-lg bg-white/90 px-4 py-2 text-center shadow-md">
-                                <i class="ri-time-line mb-1 text-xl text-indigo-400"></i>
-                                <p class="text-xs font-medium text-purple-600">Time Remaining</p>
-                                <div id="countdown-timer" class="mt-1 text-xl font-bold text-pink-600">--:--</div>
+                            <div class="flex flex-col items-center rounded bg-white/90 px-3 py-1.5 text-center shadow">
+                                <i class="ri-time-line mb-0.5 text-lg text-indigo-400"></i>
+                                <p class="font-medium text-purple-600">Time Left</p>
+                                <div id="countdown-timer" class="mt-0.5 text-base font-bold text-pink-600">--:--</div>
                             </div>
 
                             <!-- End Date -->
-                            <div class="flex flex-col items-center rounded-lg bg-white/90 px-4 py-2 text-center shadow-md">
-                                <i class="ri-calendar-event-line mb-1 text-xl text-indigo-400"></i>
-                                <p class="text-xs font-semibold text-purple-700">End Date</p>
-                                <div>
-                                    <p class="text-sm font-bold text-purple-800">{{ $auction->end->format('M d, Y') }}</p>
-                                    <p class="text-sm font-bold text-purple-800">{{ $auction->end->format('h:i A') }}</p>
-                                </div>
+                            <div class="flex flex-col items-center rounded bg-white/90 px-3 py-1.5 text-center shadow">
+                                <i class="ri-calendar-event-line mb-0.5 text-lg text-indigo-400"></i>
+                                <p class="font-medium text-purple-600">End Date</p>
+                                <p class="text-sm font-bold text-purple-800">{{ $auction->end->format('M d, Y') }}</p>
+                                <p class="text-sm font-bold text-purple-800">{{ $auction->end->format('h:i A') }}</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Product Information Section -->
-                    <div class="mb-2">
-                        <h4 class="mb-3 flex items-center gap-2 border-b pb-1 text-base font-semibold text-purple-800">
+                    <!-- Product Info Section -->
+                    <div class="mb-1">
+                        <h4 class="mb-2 flex items-center gap-2 border-b pb-1 text-sm font-semibold text-purple-800">
                             <i class="ri-information-line text-lg text-purple-600"></i>
                             Product Info
                         </h4>
 
-                        <!-- Type, Size, and Year in One Line -->
-                        <div class="rounded-lg bg-white/80 p-3 px-5 shadow transition hover:shadow-md sm:flex sm:justify-between sm:gap-4">
+                        <!-- Type, Size, Year -->
+                        <div class="rounded bg-white/80 p-3 shadow sm:flex sm:justify-between sm:gap-3">
                             <div class="sm:w-1/3">
                                 <p class="text-xs font-medium uppercase text-purple-500">Type</p>
-                                <p class="mt-1 text-sm font-semibold text-purple-900">{{ $auction->product->attributes['type'] }}</p>
+                                <p class="text-sm font-semibold text-purple-900">{{ $auction->product->attributes['type'] }}</p>
                             </div>
                             <div class="sm:w-1/3">
                                 <p class="text-xs font-medium uppercase text-purple-500">Size</p>
-                                <p class="mt-1 text-sm font-semibold text-purple-900">{{ $auction->product->attributes['size'] }}</p>
+                                <p class="text-sm font-semibold text-purple-900">{{ $auction->product->attributes['size'] }}</p>
                             </div>
                             <div class="sm:w-1/3">
                                 <p class="text-xs font-medium uppercase text-purple-500">Year</p>
-                                <p class="mt-1 text-sm font-semibold text-purple-900">{{ $auction->product->attributes['year'] }}</p>
+                                <p class="text-sm font-semibold text-purple-900">{{ $auction->product->attributes['year'] }}</p>
                             </div>
                         </div>
 
-                        <!-- Full Product Description -->
-                        <div class="mt-3 rounded-lg bg-white/80 p-3 px-5 shadow transition hover:shadow-md sm:col-span-2">
+                        <!-- Description -->
+                        <div class="mt-2 rounded bg-white/80 p-3 shadow">
                             <p class="text-xs font-medium uppercase text-purple-500">Description</p>
-                            <p class="mt-1 text-sm leading-relaxed text-purple-800">{{ Str::limit($auction->product->description, 120) }}</p>
+                            <p class="text-sm leading-snug text-purple-800">
+                                {{ Str::limit($auction->product->description, 100) }}
+                            </p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Right Column: Bidding History -->
-                <div class="w-full rounded-xl bg-white p-6 shadow-lg lg:w-1/2">
-                    <h4 class="mb-4 text-lg font-semibold text-purple-800">Top 10 Bids</h4>
+                <div class="w-full rounded-xl bg-white p-8 shadow-xl lg:w-1/2">
+                    <h4 class="mb-6 text-xl font-semibold text-purple-800">Top 10 Bids</h4>
                     @if($auction->bids->count())
                         <ul class="divide-y divide-purple-100">
                             @foreach($bids_top10 as $index => $bid)
@@ -248,21 +169,21 @@
                                     };
                                 @endphp
 
-                                <li class="flex items-center justify-between px-4 py-2 transition-all duration-300 ease-in-out hover:scale-105 hover:bg-purple-50 hover:shadow-sm">
-                                    <div class="flex w-full items-center space-x-4">
+                                <li class="flex items-center justify-between px-6 py-4 transition-all duration-300 ease-in-out hover:scale-105 hover:bg-purple-50 hover:shadow-md">
+                                    <div class="flex w-full items-center space-x-6">
                                         <!-- Badge with fixed size and perfect circle -->
-                                        <div class="font-semibold text-white rounded-xl px-4 flex justify-center items-center w-8 h-8 text-xs {{ $placementClass }}">
+                                        <div class="font-semibold text-white rounded-full px-5 py-2 text-xs sm:text-sm {{ $placementClass }}">
                                             <span class="leading-tight">{{ $placementLabel }}</span>
                                         </div>
                                     
                                         <!-- Content: Name and Time -->
-                                        <div class="flex w-full flex-col sm:flex-row sm:items-center sm:space-x-2">
-                                            <div class="text-xs font-semibold text-gray-800 sm:text-sm">{{ $bid->user->name }}</div>
+                                        <div class="flex w-full flex-col sm:flex-row sm:items-center sm:space-x-3">
+                                            <div class="text-sm font-semibold text-gray-800">{{ $bid->user->name }}</div>
                                             <span class="mt-1 text-xs text-gray-500 sm:mt-0">{{ $bid->updated_at->diffForHumans() }}</span>
                                         </div>
                                     </div>                    
                                     
-                                    <div class="ml-4 text-xs font-semibold text-purple-700 sm:text-sm">
+                                    <div class="ml-6 text-sm font-semibold text-purple-700">
                                         ₱{{ number_format($bid->amount, 2) }}
                                     </div>
                                 </li>
@@ -271,6 +192,81 @@
                     @else
                         <p class="text-sm text-gray-600">No bids placed yet.</p>
                     @endif
+                </div>
+            </div>
+
+            <!-- Bottom Section: Image + Action Buttons -->
+            <div class="grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
+                <!-- Action Buttons (Left Side) -->
+                <div class="flex w-full flex-col justify-center gap-4 p-0">
+                    <!-- My Auctions (Moved to the top) -->
+                    <a href="{{ route('auctions.index') }}"
+                    class="flex w-full items-center justify-center gap-2 rounded-lg bg-white py-3 text-sm font-semibold text-purple-700 shadow-md transition hover:bg-purple-100">
+                        <i class="ri-auction-line text-lg"></i>
+                        <span>My Auctions</span>
+                    </a>
+
+                    <!-- Edit Auction (Moved to the left side) -->
+                    <a href="{{ route('auctions.edit', $auction->id) }}"
+                    class="flex w-full items-center justify-center gap-2 rounded-lg bg-white py-3 text-sm font-semibold text-purple-700 shadow-md transition hover:bg-purple-100">
+                        <i class="ri-edit-line text-lg"></i>
+                        <span>Edit Auction</span>
+                    </a>
+
+                    <!-- View Artwork -->
+                    <a href="{{ route('products.show', $auction->product->id) }}"
+                    class="flex w-full items-center justify-center gap-2 rounded-lg bg-white py-3 text-sm font-semibold text-purple-700 shadow-md transition hover:bg-purple-100">
+                        <i class="ri-image-line text-lg"></i>
+                        <span>View Artwork</span>
+                    </a>
+                </div>
+
+                <!-- Action Buttons (Right Side) -->
+                <div class="flex w-full flex-col justify-center gap-4 p-0">
+                    <!-- Pause or Resume Button -->
+                    <form action="{{ route('auctions.update', $auction->id) }}" method="POST"
+                          onsubmit="{{ in_array($auction->status, ['ended', 'sold']) ? 'return false;' : 'return confirm(\'Are you sure you want to ' . ($auction->status === 'paused' ? 'resume' : 'pause') . ' this auction?\');' }}">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="status" value="{{ $auction->status === 'paused' ? 'active' : 'paused' }}">
+                
+                        <button type="submit"
+                                class="flex w-full items-center justify-center gap-2 rounded-lg bg-white py-3 text-sm font-semibold text-blue-600 shadow-md transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-50"
+                                {{ in_array($auction->status, ['ended', 'sold']) ? 'disabled' : '' }}>
+                            <i class="ri-{{ $auction->status === 'paused' ? 'play' : 'pause' }}-line text-lg"></i>
+                            <span>{{ $auction->status === 'paused' ? 'Resume' : 'Pause' }} Auction</span>
+                        </button>
+                    </form>
+                
+                    <!-- Finish Button (disabled when ended or sold) -->
+                    <form action="{{ route('auctions.update', $auction->id) }}" method="POST"
+                        onsubmit="{{ in_array($auction->status, ['ended', 'sold']) ? 'return false;' : 'return confirm(\'Are you sure you want to finish this auction?\');' }}">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="status" value="ended">
+                        <input type="hidden" name="end" value="{{ now()->setSeconds(0) }}">
+                    
+                        <button type="submit"
+                                class="flex w-full items-center justify-center gap-2 rounded-lg bg-white py-3 text-sm font-semibold text-green-600 shadow-md transition hover:bg-green-100 disabled:cursor-not-allowed disabled:opacity-50"
+                                {{ in_array($auction->status, ['ended', 'sold']) ? 'disabled' : '' }}>
+                            <i class="ri-check-line text-lg"></i>
+                            <span>Finish Auction</span>
+                        </button>
+                    </form>                  
+                
+                    <!-- Stop Button -->
+                    <form action="{{ route('auctions.destroy', $auction) }}" method="POST"
+                        onsubmit="return {{ $auction->status === 'sold' ? 'false' : 'confirm(\'Are you sure you want to delete this auction?\')' }};">
+                        @csrf
+                        @method('DELETE')
+
+                        <button type="submit"
+                                class="flex w-full items-center justify-center gap-2 rounded-lg bg-white py-3 text-sm font-semibold text-red-600 shadow-md transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+                                {{ $auction->status === 'sold' ? 'disabled' : '' }}>
+                            <i class="ri-delete-bin-line text-lg"></i>
+                            <span>Stop Auction</span>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
