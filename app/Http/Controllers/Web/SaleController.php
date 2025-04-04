@@ -14,9 +14,17 @@ class SaleController extends Controller
      */
     public function index()
     {
-        $purchases = Auth::user()->sales()->orderBy('created_at', 'desc')->paginate(10);
+        $status = request('status');
 
-        return view('_user.sales.index', compact('purchases'));
+        $query = Auth::user()->sales()->orderBy('product_purchases.created_at', 'desc');
+
+        if ($status) {
+            $query->where('product_purchases.status', $status);
+        }
+
+        $purchases = $query->paginate(10);
+
+        return view('_user.sales.index', compact('purchases', 'status'));
     }
 
     /**

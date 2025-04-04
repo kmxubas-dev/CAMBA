@@ -34,6 +34,24 @@
             </div>
         @endif
 
+        @php
+            $statuses = ['requested', 'pending', 'paid', 'successful'];
+        @endphp
+
+        <div class="flex space-x-4 border-b">
+            @foreach ($statuses as $stat)
+                <a href="{{ route('sales.index', ['status' => $stat]) }}"
+                class="pb-2 border-b-2 text-sm font-semibold {{ request('status') === $stat ? 'border-purple-600 text-purple-600' : 'border-transparent text-gray-500 hover:text-purple-600' }}">
+                    {{ ucfirst($stat) }}
+                </a>
+            @endforeach
+
+            <a href="{{ route('sales.index') }}"
+            class="pb-2 border-b-2 text-sm font-semibold {{ is_null(request('status')) ? 'border-purple-600 text-purple-600' : 'border-transparent text-gray-500 hover:text-purple-600' }}">
+                All
+            </a>
+        </div>
+
         <!-- Purchases List -->
         @if($purchases->isEmpty())
             <div class="flex items-center justify-center py-10">
@@ -78,8 +96,10 @@
                         <div class="flex w-full items-center justify-between text-center text-sm lg:w-3/12">
                             <!-- Status Badge -->
                             <div class="inline-block py-1 px-4 rounded-full text-xs font-medium uppercase 
-                                {{ $purchase->status == 'Paid' ? 'bg-green-100 text-green-600' : 
-                                   ($purchase->status == 'Pending' ? 'bg-yellow-100 text-yellow-600' : 'bg-gray-100 text-gray-600') }}">
+                                {{ strtolower($purchase->status) == 'paid' ? 'bg-violet-200 text-violet-900' : 
+                                (strtolower($purchase->status) == 'pending' ? 'bg-fuchsia-200 text-fuchsia-900' : 
+                                (strtolower($purchase->status) == 'requested' ? 'bg-pink-100 text-pink-600' :
+                                'bg-purple-200 text-purple-900')) }}">
                                 {{ ucfirst($purchase->status) }}
                             </div>
 
@@ -99,7 +119,7 @@
 
             <!-- Pagination -->
             <div class="mt-6">
-                {{ $purchases->links() }}
+                {{ $purchases->appends(request()->query())->links() }}
             </div>
         @endif
     </section>
