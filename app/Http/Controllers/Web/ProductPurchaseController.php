@@ -17,9 +17,17 @@ class ProductPurchaseController extends Controller
      */
     public function index()
     {
-        $purchases = Auth::user()->purchases()->orderBy('created_at', 'desc')->paginate(10);
-
-        return view('_user.purchases.index', compact('purchases'));
+        $status = request('status');
+    
+        $query = Auth::user()->purchases()->orderBy('created_at', 'desc');
+    
+        if ($status) {
+            $query->where('status', $status);
+        }
+    
+        $purchases = $query->paginate(10);
+    
+        return view('_user.purchases.index', compact('purchases', 'status'));
     }
 
     /**
