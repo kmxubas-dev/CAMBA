@@ -51,4 +51,9 @@ Route::middleware([
     });
     
     Route::get('search', [AppController::class, 'search'])->name('search');
+
+    Route::prefix('export')->name('export.')->group(function () {
+        Route::get('purchases-monthly', [AppController::class, 'exportPurchasesMonthly'])
+            ->name('purchases.monthly');
+    });
 });

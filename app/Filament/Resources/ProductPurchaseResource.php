@@ -12,6 +12,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -68,6 +69,12 @@ class ProductPurchaseResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     // Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+                Action::make('exportMonthly')
+                    ->label('Export Monthly')
+                    ->url(route('export.purchases.monthly'))
+                    ->icon('heroicon-o-chart-bar'),
             ]);
     }
 

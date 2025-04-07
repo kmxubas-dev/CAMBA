@@ -7,8 +7,10 @@ use App\Models\Product;
 use App\Models\ProductAuction;
 use App\Models\ProductPurchase;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 
 class AppController extends Controller
@@ -226,4 +228,72 @@ class AppController extends Controller
         return view('_user.search', compact('products', 'auctionProducts', 'purchaseProducts', 'query'));
     }
 
+    /**
+     * Export - Yearly
+     *
+     * @return \Illuminate\Http\Response
+     */
+    
+    public function exportPurchasesMonthly()
+    {
+        $year = now()->year;
+
+        $purchases = ProductPurchase::whereYear('created_at', $year)->get();
+
+        // Prepare months with default 0 values
+        $months = collect(range(1, 12))->mapWithKeys(function ($month) {
+            return [Carbon::create()->month($month)->format('F') => [
+                'total_amount' => 0,
+                'count' => 0
+            ]];
+        });
+
+        // Group purchases by month name
+        $monthlyData = $purchases->groupBy(function ($item) {
+            return Carbon::parse($item->created_at)->format('F');
+        })->map(function ($group) {
+            return [
+                'total_amount' => $group->sum('amount'),
+                'count' => $group->count()
+            ];
+        });
+
+        // Merge actual data into all months
+        $finalData = $months->map(function ($value, $month) use ($monthlyData) {
+            return $monthlyData->get($month, $value);
+        });
+
+        $totalAmount = $purchases->sum('amount');
+        $totalCount = $purchases->count();
+
+        $csv = fopen('php://temp', 'r+');
+        fputcsv($csv, ['Month', 'Total Amount (PHP)', 'Sales Count']);
+
+        foreach ($finalData as $month => $data) {
+            fputcsv($csv, [
+                $month,
+                '₱' . number_format($data['total_amount'], 2),
+                $data['count']
+            ]);
+        }
+
+        // Final summary row
+        fputcsv($csv, [
+            $year . ' Total',
+            '₱' . number_format($totalAmount, 2),
+            $totalCount
+        ]);
+
+        // Output CSV with UTF-8 BOM for Excel
+        rewind($csv);
+        $csvOutput = stream_get_contents($csv);
+        fclose($csv);
+
+        $csvOutput = "\xEF\xBB\xBF" . $csvOutput;
+
+        return Response::make($csvOutput, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="product_purchases_'.$year.'.csv"',
+        ]);
+    }
 }
